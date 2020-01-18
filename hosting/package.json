@@ -7,8 +7,7 @@
         "dev": "parcel serve ./src/index.html --out-dir ./public --open",
         "prebuild": "rm -rf ./public/*",
         "build": "parcel build ./src/index.html --out-dir ./public ",
-        "test": "jest --config ./jest.config.test.js",
-        "etest": "jest --config ./jest.config.e2e.js"
+        "test": "jest"
     },
     "dependencies": {
         "@types/react": "^16.9.17",
@@ -21,16 +20,25 @@
     "devDependencies": {
         "@types/enzyme": "^3.10.4",
         "@types/enzyme-adapter-react-16": "^1.0.5",
-        "@types/expect-puppeteer": "^4.4.0",
         "@types/jest": "^24.9.0",
-        "@types/jest-environment-puppeteer": "^4.3.1",
-        "@types/puppeteer": "^2.0.0",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.2",
         "jest": "^24.9.0",
-        "jest-puppeteer": "^4.4.0",
         "parcel-bundler": "^1.12.4",
-        "puppeteer": "^2.0.0",
         "ts-jest": "^24.3.0"
+    },
+    "jest": {
+        "preset": "ts-jest",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js"
+        ],
+        "setupFilesAfterEnv": [
+            "./src/setUpTest.ts"
+        ],
+        "testMatch": [
+            "**/?(*.)(spec|test).ts?(x)"
+        ]
     }
 }
