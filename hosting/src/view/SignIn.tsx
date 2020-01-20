@@ -7,8 +7,16 @@ const SignIn: React.FC = props => {
 
     return (
         <div>
-            <h1>SignIn</h1>
-            <button onClick={() => dispatch(signIn())}>SignIn</button>
+            <div className="image image--sign-in-app"/>
+            <h1 className="text text--sign-in-title">Consuetudo</h1>
+            <button
+                className="button button--sign-in-google"
+                onClick={() => dispatch(signIn())}
+            >
+                <span className="button__label">
+                    Sign in with Google
+                </span>
+            </button>
         </div>
     )
 }

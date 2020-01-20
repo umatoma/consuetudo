@@ -1,6 +1,140 @@
+@import "~@material/typography/mdc-typography";
+@import "~@material/button/mdc-button";
+@import "~@material/top-app-bar/mdc-top-app-bar";
+@import "~@material/icon-button/mdc-icon-button";
+@import "~@material/list/mdc-list";
+@import "~@material/menu-surface/mdc-menu-surface";
+@import "~@material/menu/mdc-menu";
 
-.app {
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/materialicons/v48/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+.text {
+    @extend .mdc-typography;
+
+    &--sign-in-title {
+        @extend .mdc-typography--headline4;
+
+        text-align: center;
+        margin-top: 16px;
+    }
+}
+
+.image {
+    &--sign-in-app {
+        background-image: url("./assets/appicon.svg");
+        background-repeat: no-repeat;
+        background-position: center center;
+        width: 128px;
+        height: 128px;
+        margin: 128px auto 0 auto;
+    }
+}
+
+.button {
+    @extend .mdc-button;
+
+    &--sign-in-google {
+        @extend .mdc-button--raised;
+
+        @include mdc-button-shape-radius($radius: ($mdc-button-height / 2));
+
+        text-transform: none;
+        margin: 92px auto 0 auto;
+        display: block;
+        width: 256px;
+
+        &:not(:disabled) {
+            background: linear-gradient(90deg, #2faaff, #2cceff);
+        }
+    }
+
+    &__label {
+        @extend .mdc-button__label;
+    }
+}
+
+.icon-button {
+    @extend .mdc-icon-button;
+    @extend .material-icons;
+}
+
+.top-app-bar {
+    @extend .mdc-top-app-bar;
+    @extend .mdc-top-app-bar--short;
+
+    background: linear-gradient(90deg, #2faaff, #2cceff);
+
+    &--fixed-adjust {
+        @extend .mdc-top-app-bar--fixed-adjust;
+    }
+
+    &__row {
+        @extend .mdc-top-app-bar__row;
+    }
+
+    &__section {
+        @extend  .mdc-top-app-bar__section;
+
+        &--align-start {
+            @extend  .mdc-top-app-bar__section--align-start;
+        }
+
+        &--align-end {
+            @extend  .mdc-top-app-bar__section--align-end;
+        }
+    }
+
     &__title {
-        color: blue;
+        @extend .mdc-top-app-bar__title;
+    }
+}
+
+.menu {
+    @extend .mdc-menu;
+
+    &--top-app-bar {
+        right: 0;
+        top: $mdc-top-app-bar-mobile-row-height;
+    }
+}
+
+.menu-surface {
+    @extend .mdc-menu-surface;
+
+    &--open {
+        @extend .mdc-menu-surface--open;
+    }
+}
+
+.list {
+    @extend .mdc-list;
+}
+
+.list-item {
+    @extend .mdc-list-item;
+
+    &__text {
+        @extend .mdc-list-item__text;
     }
 }

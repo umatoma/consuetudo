@@ -8,10 +8,11 @@ import Home from './Home'
 function renderChildComponent(authState: FirebaseAuthState): ReactElement | null {
     switch (authState) {
         case FirebaseAuthState.Loading:
-            return null
+            return <div>Loading</div>
         case FirebaseAuthState.SignedIn:
             return <Home/>
         case FirebaseAuthState.SignedOut:
+        case FirebaseAuthState.Error:
             return <SignIn/>
     }
 }
@@ -19,11 +20,7 @@ function renderChildComponent(authState: FirebaseAuthState): ReactElement | null
 const App: React.FC = props => {
     const authState = useSelector<StoreState, FirebaseAuthState>(state => state.firebase.authState)
 
-    return (
-        <div className="app">
-            {renderChildComponent(authState)}
-        </div>
-    )
+    return renderChildComponent(authState)
 }
 
 export default App

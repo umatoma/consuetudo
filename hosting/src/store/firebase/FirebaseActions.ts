@@ -23,14 +23,24 @@ export const initializeFirebase = (): ThunkResult<void> => {
 }
 
 export const signIn = (): ThunkResult<void> => {
-    return () => {
+    return (dispatch) => {
         const provider = new firebase.auth.GoogleAuthProvider()
-        firebase.auth().signInWithPopup(provider)
+        firebase
+            .auth()
+            .signInWithRedirect(provider)
+            .catch(error => {
+                dispatch({ type: FirebaseActionType.SetAuthState, authState: FirebaseAuthState.Error, error: error })
+            })
     }
 }
 
 export const signOut = (): ThunkResult<void> => {
-    return () => {
-        firebase.auth().signOut()
+    return (dispatch) => {
+        firebase
+            .auth()
+            .signOut()
+            .catch(error => {
+                dispatch({ type: FirebaseActionType.SetAuthState, authState: FirebaseAuthState.Error, error: error })
+            })
     }
 }
