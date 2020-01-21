@@ -5,6 +5,8 @@
 @import "~@material/list/mdc-list";
 @import "~@material/menu-surface/mdc-menu-surface";
 @import "~@material/menu/mdc-menu";
+@import "~@material/elevation/mdc-elevation";
+@import "~@material/checkbox/mdc-checkbox";
 
 @font-face {
     font-family: 'Material Icons';
@@ -28,6 +30,9 @@
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
+
+$color-primary-dark: #2faaff;
+$color-primary-light: #2cceff;
 
 .text {
     @extend .mdc-typography;
@@ -65,7 +70,7 @@
         width: 256px;
 
         &:not(:disabled) {
-            background: linear-gradient(90deg, #2faaff, #2cceff);
+            background: linear-gradient(90deg, $color-primary-dark, $color-primary-light);
         }
     }
 
@@ -77,16 +82,32 @@
 .icon-button {
     @extend .mdc-icon-button;
     @extend .material-icons;
+
+    &__to-prev-day {
+        @include mdc-icon-button-size($size: 32px);
+        @include mdc-icon-button-ink-color($color: $color-primary-dark);
+
+        background-color: #ffffff;
+        border-radius: 16px;
+    }
+
+    &__to-next-day {
+        @include mdc-icon-button-size($size: 32px);
+        @include mdc-icon-button-ink-color($color: $color-primary-light);
+
+        background-color: #ffffff;
+        border-radius: 16px;
+    }
 }
 
 .top-app-bar {
     @extend .mdc-top-app-bar;
     @extend .mdc-top-app-bar--short;
 
-    background: linear-gradient(90deg, #2faaff, #2cceff);
+    background: linear-gradient(90deg, $color-primary-dark, $color-primary-light);
 
     &--fixed-adjust {
-        @extend .mdc-top-app-bar--fixed-adjust;
+        @extend .mdc-top-app-bar--short-fixed-adjust;
     }
 
     &__row {
@@ -94,19 +115,83 @@
     }
 
     &__section {
-        @extend  .mdc-top-app-bar__section;
+        @extend .mdc-top-app-bar__section;
 
         &--align-start {
-            @extend  .mdc-top-app-bar__section--align-start;
+            @extend .mdc-top-app-bar__section--align-start;
         }
 
         &--align-end {
-            @extend  .mdc-top-app-bar__section--align-end;
+            @extend .mdc-top-app-bar__section--align-end;
         }
     }
 
     &__title {
         @extend .mdc-top-app-bar__title;
+    }
+}
+
+.top-nav {
+    &__row {
+        $row-height: 64px;
+
+        display: flex;
+        height: $row-height;
+        background-image: linear-gradient(90deg, $color-primary-dark, $color-primary-light);
+
+        &--half-colored {
+            background-image: linear-gradient(90deg, $color-primary-dark, $color-primary-light), linear-gradient(#ffffff, #ffffff);
+            background-position: left top, left bottom;
+            background-repeat: no-repeat, no-repeat;
+            background-size: 100% $row-height/2, 100% $row-height/2;
+        }
+    }
+
+    &__section {
+        display: inline-flex;
+        align-items: center;
+
+        &--full {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        &--left {
+            justify-content: flex-start;
+            padding-left: 16px;
+        }
+
+        &--center {
+            justify-content: center;
+        }
+
+        &--right {
+            justify-content: flex-end;
+            padding-right: 16px;
+        }
+    }
+
+    &__title {
+        @extend .mdc-typography;
+        @extend .mdc-typography--headline6;
+
+        color: #ffffff;
+        text-align: center;
+    }
+
+    &__panel {
+        @extend .mdc-elevation--z2;
+        @extend .mdc-typography;
+        @extend .mdc-typography--headline6;
+
+        width: 192px;
+        height: 48px;
+        line-height: 48px;
+        background-color: #ffffff;
+        text-align: center;
+        border-radius: 4px;
+        margin: 0 auto;
     }
 }
 
@@ -134,7 +219,52 @@
 .list-item {
     @extend .mdc-list-item;
 
+    &--habit {
+        @extend .mdc-elevation--z2;
+
+        @include mdc-list-single-line-height($height: 56px);
+
+        margin: 16px 16px 0 16px;
+        border-radius: 4px;
+    }
+
     &__text {
         @extend .mdc-list-item__text;
+    }
+
+    &__meta {
+        @extend .mdc-list-item__meta;
+    }
+}
+
+.checkbox {
+    @extend .mdc-checkbox;
+
+    @include mdc-checkbox-container-colors(
+                    $unmarked-stroke-color: $color-primary-light,
+                    $unmarked-fill-color: transparent,
+                    $marked-stroke-color: $color-primary-dark,
+                    $marked-fill-color: $color-primary-dark,
+                    $generate-keyframes: true);
+    @include mdc-checkbox-ink-color($color: #ffffff);
+
+    &__native-control {
+        @extend .mdc-checkbox__native-control;
+    }
+
+    &__background {
+        @extend .mdc-checkbox__background;
+    }
+
+    &__checkmark {
+        @extend .mdc-checkbox__checkmark;
+    }
+
+    &__checkmark-path {
+        @extend .mdc-checkbox__checkmark-path;
+    }
+
+    &__mixedmark {
+        @extend .mdc-checkbox__mixedmark;
     }
 }

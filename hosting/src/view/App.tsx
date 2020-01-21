@@ -2,8 +2,8 @@ import React, { ReactElement } from 'react'
 import { useSelector } from 'react-redux'
 import StoreState from '../store/StoreState'
 import { FirebaseAuthState } from '../store/firebase/FirebaseStates'
-import SignIn from './SignIn'
-import Home from './Home'
+import SignIn from './signIn/SignIn'
+import Home from './home/Home'
 
 function renderChildComponent(authState: FirebaseAuthState): ReactElement | null {
     switch (authState) {

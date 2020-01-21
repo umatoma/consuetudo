@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { signOut } from '../store/firebase/FirebaseActions'
+import { signOut } from '../../store/firebase/FirebaseActions'
 
 interface TopAppBarProps {
     iconButtonList?: ReactElement[]

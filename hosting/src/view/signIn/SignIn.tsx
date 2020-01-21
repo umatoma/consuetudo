@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useDispatch } from 'react-redux'
-import { signIn } from '../store/firebase/FirebaseActions'
+import { signIn } from '../../store/firebase/FirebaseActions'
 
 const SignIn: React.FC = props => {
     const dispatch = useDispatch()
