@@ -1,9 +1,9 @@
-import { FirebaseAuthState } from './FirebaseStates'
+import { FirebaseAuthState } from './FirebaseState'
 import * as firebase from 'firebase/app'
 import ThunkResult from '../ThunkResult'
 
 export enum FirebaseActionType {
-    SetAuthState
+    SetAuthState = 'FirebaseAction/SetAuthState'
 }
 
 export const initializeFirebase = (): ThunkResult<void> => {

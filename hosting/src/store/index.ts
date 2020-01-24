@@ -1,14 +1,14 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
-import appStateReducer from './app/AppStateReducer'
+import userReducer from './user/UserReducer'
 import firebaseReducer from './firebase/FirebaseReducer'
 import StoreState from './StoreState'
 import ThunkStore from './ThunkStore'
 
 
 const reducer = combineReducers({
-    app: appStateReducer,
+    user: userReducer,
     firebase: firebaseReducer
 })
 const middleware = applyMiddleware(

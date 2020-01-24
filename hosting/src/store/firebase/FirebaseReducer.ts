@@ -1,5 +1,5 @@
 import { Reducer } from 'redux'
-import { FirebaseAuthState, FirebaseState } from './FirebaseStates'
+import { FirebaseAuthState, FirebaseState } from './FirebaseState'
 import { FirebaseActionType } from './FirebaseActions'
 
 const initialState: FirebaseState = {

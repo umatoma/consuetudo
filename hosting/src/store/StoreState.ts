@@ -1,8 +1,8 @@
-import AppState from './app/AppState'
-import { FirebaseState } from './firebase/FirebaseStates'
+import UserState from './user/UserState'
+import { FirebaseState } from './firebase/FirebaseState'
 
 type StoreState = {
-    app: AppState,
+    user: UserState,
     firebase: FirebaseState
 }
 

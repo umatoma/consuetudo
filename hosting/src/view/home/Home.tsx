@@ -1,15 +1,21 @@
 import React from 'react'
 import TopAppBar from '../_common/TopAppBar'
+import { useDispatch, useSelector } from 'react-redux'
+import { postUserHabit } from '../../store/user/UserActionType'
+import StoreState from '../../store/StoreState'
+import { Habit } from '../../store/user/UserEntities'
 
 const Home: React.FC = props => {
+    const dispatch = useDispatch()
+    const habitList = useSelector<StoreState, Habit[]>(state => state.user.habitList)
+
     return (
         <TopAppBar
             iconButtonList={[
                 <button
+                    key="post-user-habit"
                     className="icon-button"
-                    onClick={() => {
-                        window.alert('ADD')
-                    }}
+                    onClick={() => dispatch(postUserHabit())}
                 >
                     add
                 </button>
@@ -34,9 +40,14 @@ const Home: React.FC = props => {
                 </div>
             </div>
             <ul className="list" role="group">
-                {[1,1,1,1,1].map(() => (
-                    <li className="list-item list-item--habit" role="checkbox" aria-checked="false">
-                        本を読む
+                {habitList.map((habit) => (
+                    <li
+                        className="list-item list-item--habit"
+                        role="checkbox"
+                        aria-checked="false"
+                        key={habit.id}
+                    >
+                        {habit.name}
                         <div className="checkbox list-item__meta">
                             <input type="checkbox" className="checkbox__native-control"/>
                             <div className="checkbox__background">

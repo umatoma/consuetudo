@@ -6,8 +6,8 @@ export type FirebaseState = {
 }
 
 export enum FirebaseAuthState {
-    Loading,
-    SignedIn,
-    SignedOut,
-    Error
+    Loading= 'Loading',
+    SignedIn = 'SignedIn',
+    SignedOut = 'SignedOut',
+    Error = 'Error'
 }
