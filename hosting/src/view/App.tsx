@@ -1,33 +1,11 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { BrowserRouter, Route, Switch, useHistory } from 'react-router-dom'
-import StoreState from '../store/StoreState'
+import React from 'react'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { FirebaseAuthState } from '../store/firebase/FirebaseState'
-import SignIn from './signIn/SignIn'
-import { loadUserState } from '../store/user/UserActionType'
-import Home from './home/Home'
+import { useAuthStateEffect, useFirebaseSelector } from './_common/Hooks'
+import { AppRoutePropsFactory } from './_common/AppRoute'
 
-function useAuthStateEffect(authState: FirebaseAuthState) {
-    const dispatch = useDispatch()
-    const history = useHistory()
-    useEffect(() => {
-        switch (authState) {
-            case FirebaseAuthState.Loading:
-                break;
-            case FirebaseAuthState.Error:
-            case FirebaseAuthState.SignedOut:
-                history.push('/signIn')
-                break;
-            case FirebaseAuthState.SignedIn:
-                dispatch(loadUserState())
-                history.push('/home')
-                break;
-        }
-    }, [authState])
-}
-
-const AppSwitch: React.FC = props => {
-    const authState = useSelector<StoreState, FirebaseAuthState>(state => state.firebase.authState)
+const AppInner: React.FC = props => {
+    const authState = useFirebaseSelector<FirebaseAuthState>(state => state.authState)
     useAuthStateEffect(authState)
 
     if (authState == FirebaseAuthState.Loading) {
@@ -36,14 +14,13 @@ const AppSwitch: React.FC = props => {
         )
     }
 
+    const routePropsFactory = AppRoutePropsFactory.getInstance()
     return (
         <Switch>
-            <Route path="/signIn" exact>
-                <SignIn/>
-            </Route>
-            <Route path="/home" exact>
-                <Home/>
-            </Route>
+            <Route {...routePropsFactory.signIn()} />
+            <Route {...routePropsFactory.home()} />
+            <Route {...routePropsFactory.postHabit()} />
+            <Route {...routePropsFactory.viewHabit()} />
             <Route path="*">
                 <div>Not Found</div>
             </Route>
@@ -54,7 +31,14 @@ const AppSwitch: React.FC = props => {
 const App: React.FC = props => {
     return (
         <BrowserRouter>
-            <AppSwitch/>
+            <div className="app">
+                <div className="app__container">
+                    <AppInner/>
+                </div>
+                <div className="app__footer">
+                    <div className="app__footer-title">Consuetudo</div>
+                </div>
+            </div>
         </BrowserRouter>
     )
 }

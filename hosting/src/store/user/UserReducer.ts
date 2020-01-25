@@ -1,6 +1,6 @@
 import { AnyAction, Reducer } from 'redux'
 import UserState from './UserState'
-import { UserActionType } from './UserActionType'
+import { UserActionType } from './UserActions'
 import { Habit } from './UserEntities'
 
 const initialState: UserState = {

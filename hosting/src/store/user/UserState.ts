@@ -1,5 +1,7 @@
+import { Habit } from './UserEntities'
+
 type UserState = {
-    habitList: []
+    habitList: Habit[]
 }
 
 export default UserState

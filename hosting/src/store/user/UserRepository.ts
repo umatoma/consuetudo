@@ -4,6 +4,7 @@ import { Habit, User } from './UserEntities'
 export interface UserRepository {
     postUserHabit(userId: string, habit: Habit): Promise<void>
     getUserHabitList(userId: string): Promise<Habit[]>
+    deleteUserHabit(userId: string, habit: Habit): Promise<void>
 }
 
 export class FirebaseUserRepository implements UserRepository {
@@ -28,5 +29,14 @@ export class FirebaseUserRepository implements UserRepository {
             const data = doc.data()
             return new Habit(doc.id, data.name)
         })
+    }
+
+    async deleteUserHabit(userId: string, habit: Habit): Promise<void> {
+        const db = firebase.firestore()
+
+        const habitRef = db
+            .collection('users').doc(userId)
+            .collection('habits').doc(habit.id)
+        await habitRef.delete()
     }
 }

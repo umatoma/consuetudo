@@ -8,7 +8,7 @@ export enum UserActionType {
     SetHabitList = 'UserActions/SetHabitList'
 }
 
-export const loadUserState = (): ThunkResult<void> => {
+export const loadUserState = (): ThunkResult<Promise<void>> => {
     return async (dispatch, getState) => {
         const state = getState()
 
@@ -19,14 +19,25 @@ export const loadUserState = (): ThunkResult<void> => {
     }
 }
 
-export const postUserHabit = (): ThunkResult<void> => {
+export const postUserHabit = (name: string): ThunkResult<Promise<void>> => {
     return async (dispatch, getState) => {
         const state = getState()
 
         const userId = state.firebase.user!!.uid
-        const habit = Habit.newEntity('水を飲む')
+        const habit = Habit.newEntity(name)
         await userRepository.postUserHabit(userId, habit)
 
-        dispatch(loadUserState())
+        await dispatch(loadUserState())
+    }
+}
+
+export const deleteUserHabit = (habit: Habit): ThunkResult<Promise<void>> => {
+    return async (dispatch, getState) => {
+        const state = getState()
+
+        const userId = state.firebase.user!!.uid
+        await userRepository.deleteUserHabit(userId, habit)
+
+        await dispatch(loadUserState())
     }
 }

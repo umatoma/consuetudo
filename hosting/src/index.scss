@@ -7,6 +7,11 @@
 @import "~@material/menu/mdc-menu";
 @import "~@material/elevation/mdc-elevation";
 @import "~@material/checkbox/mdc-checkbox";
+@import "~@material/textfield/mdc-text-field";
+@import "~@material/layout-grid/mdc-layout-grid";
+
+
+// ----- //
 
 @font-face {
     font-family: 'Material Icons';
@@ -30,6 +35,8 @@
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
 }
+
+// ----- //
 
 $color-primary-dark: #2faaff;
 $color-primary-light: #2cceff;
@@ -59,19 +66,54 @@ $color-primary-light: #2cceff;
 .button {
     @extend .mdc-button;
 
-    &--sign-in-google {
+    @include mdc-button-shape-radius($radius: ($mdc-button-height / 2));
+
+    &--primary {
         @extend .mdc-button--raised;
 
-        @include mdc-button-shape-radius($radius: ($mdc-button-height / 2));
+        &:not(:disabled) {
+            background: linear-gradient(90deg, $color-primary-dark, $color-primary-light);
+        }
+    }
+
+    &--secondary {
+        @extend .mdc-button--outlined;
+
+        @include mdc-button-ink-color($color: $color-primary-light);
+        @include mdc-button-outline-color($color: $color-primary-light);
+    }
+
+    &--sign-in-google {
+        @extend .button--primary;
 
         text-transform: none;
         margin: 92px auto 0 auto;
         display: block;
         width: 256px;
+    }
 
-        &:not(:disabled) {
-            background: linear-gradient(90deg, $color-primary-dark, $color-primary-light);
-        }
+    &--put-habit {
+        @extend .button--secondary;
+
+        width: 100%;
+    }
+
+    &--delete-habit {
+        @extend .button--secondary;
+
+        width: 100%;
+    }
+
+    &--confirm {
+        @extend .button--primary;
+
+        width: 100%;
+    }
+
+    &--cancel {
+        @extend .button--secondary;
+
+        width: 100%;
     }
 
     &__label {
@@ -268,3 +310,71 @@ $color-primary-light: #2cceff;
         @extend .mdc-checkbox__mixedmark;
     }
 }
+
+.text-field {
+    @extend .mdc-text-field;
+
+    &--fullwidth {
+        @extend .mdc-text-field--fullwidth;
+    }
+
+    &__input {
+        @extend .mdc-text-field__input;
+    }
+}
+
+.layout-grid {
+    @extend .mdc-layout-grid;
+
+    &--post-habit {
+        padding: 32px;
+        margin-top: 92px;
+    }
+
+    &__inner {
+        @extend .mdc-layout-grid__inner;
+    }
+
+    &__cell {
+        @extend .mdc-layout-grid__cell;
+
+        &--bottom-buttons {
+            margin-top: 32px;
+        }
+
+        &--span-2 {
+            @extend .mdc-layout-grid__cell--span-2;
+        }
+    }
+}
+
+.app {
+    &__container {
+        min-height: 100vh;
+    }
+
+    &__footer {
+        padding-top: 64px;
+        padding-bottom: 32px;
+    }
+
+    &__footer-title {
+        @extend .mdc-typography;
+        @extend .mdc-typography--subtitle1;
+
+        text-align: center;
+        color: $color-primary-dark;
+    }
+}
+
+// ----- //
+
+.react-calendar {
+    @extend .mdc-elevation--z2;
+
+    margin: 0 auto 0 auto;
+    border: none !important;
+    border-radius: 4px;
+}
+
+// ----- //
