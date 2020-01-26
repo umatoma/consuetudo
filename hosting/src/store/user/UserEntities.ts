@@ -4,13 +4,6 @@ export interface Comparable {
     isEqual(target: Comparable): boolean
 }
 
-export class User {
-    constructor(
-        public habitList: Habit[]
-    ) {
-    }
-}
-
 export class Habit implements Comparable {
     readonly id: string
     readonly name: string
@@ -24,7 +17,7 @@ export class Habit implements Comparable {
     constructor(params: { id: string, name: string, recordList?: HabitRecord[] }) {
         this.id = params.id
         this.name = params.name
-        this.recordList = params.recordList || []
+        this.recordList = params.recordList?.map(r => new HabitRecord(r)) || []
     }
 
     pushRecord(record: HabitRecord): Habit {
@@ -49,12 +42,8 @@ export class Habit implements Comparable {
         })
     }
 
-    isRecordedOn(year: number, month: number, date: number): boolean {
-        return !!this.recordList.find((record: HabitRecord) => record.isRecordedOn(year, month, date))
-    }
-
-    toObject(): object {
-        return Object.assign({}, this)
+    isRecordedOn(recordDate: HabitRecordDate): boolean {
+        return !!this.recordList.find((record: HabitRecord) => record.isRecordedOn(recordDate))
     }
 
     isEqual(target: Habit): boolean {
@@ -75,11 +64,11 @@ export class HabitRecord implements Comparable {
         this.date = params.date
     }
 
-    isRecordedOn(year: number, month: number, date: number) {
+    isRecordedOn(recordDate: HabitRecordDate) {
         return (
-            year === this.year &&
-            month === this.month &&
-            date === this.date
+            recordDate.year === this.year &&
+            recordDate.month === this.month &&
+            recordDate.date === this.date
         )
     }
 
@@ -90,5 +79,37 @@ export class HabitRecord implements Comparable {
             target.month === this.month &&
             target.date === this.date
         )
+    }
+}
+
+export class HabitRecordDate {
+    static fromDate(date: Date): HabitRecordDate {
+        return new HabitRecordDate({
+            year: date.getFullYear(),
+            month: date.getMonth() + 1,
+            date: date.getDate()
+        })
+    }
+
+    readonly year: number
+    readonly month: number
+    readonly date: number
+
+    constructor(params: { year: number, month: number, date: number }) {
+        this.year = params.year
+        this.month = params.month
+        this.date = params.date
+    }
+
+    nextDate(): HabitRecordDate {
+        const date = new Date(this.year, this.month - 1, this.date)
+        date.setDate(date.getDate() + 1)
+        return HabitRecordDate.fromDate(date)
+    }
+
+    prevDate(): HabitRecordDate {
+        const date = new Date(this.year, this.month - 1, this.date)
+        date.setDate(date.getDate() - 1)
+        return HabitRecordDate.fromDate(date)
     }
 }

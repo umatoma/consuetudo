@@ -47,16 +47,16 @@ export const pushUserHabitRecord = (habitRecord: HabitRecord): ThunkResult<Promi
         const state = getState()
 
         const habitList = state.user.habitList
-        const newHabitList = habitList.map(habit => {
-            if (habit.id === habitRecord.habitId) {
-                return habit.pushRecord(habitRecord)
-            }
-            return habit
-        })
+        const habit = habitList.find(habit => habit.id === habitRecord.habitId)
+        if (!habit) {
+            throw new Error('Failed to pushUserHabitRecord()')
+        }
 
-        // TODO: DB更新 -> データ再読み込み
+        const userId = state.firebase.user!!.uid
+        const newHabit = habit?.pushRecord(habitRecord)
+        await userRepository.putUserHabit(userId, newHabit)
 
-        dispatch({ type: UserActionType.SetHabitList, payload: newHabitList })
+        await dispatch(loadUserState())
     }
 }
 
@@ -65,15 +65,15 @@ export const removeUserHabitRecord = (habitRecord: HabitRecord): ThunkResult<Pro
         const state = getState()
 
         const habitList = state.user.habitList
-        const newHabitList = habitList.map(habit => {
-            if (habit.id === habitRecord.habitId) {
-                return habit.removeRecord(habitRecord)
-            }
-            return habit
-        })
+        const habit = habitList.find(habit => habit.id === habitRecord.habitId)
+        if (!habit) {
+            throw new Error('Failed to pushUserHabitRecord()')
+        }
 
-        // TODO: DB更新 -> データ再読み込み
+        const userId = state.firebase.user!!.uid
+        const newHabit = habit?.removeRecord(habitRecord)
+        await userRepository.putUserHabit(userId, newHabit)
 
-        dispatch({ type: UserActionType.SetHabitList, payload: newHabitList })
+        await dispatch(loadUserState())
     }
 }
