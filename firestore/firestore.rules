@@ -31,6 +31,15 @@ service cloud.firestore {
                               && isUserAuthenticated(userId);
                 allow delete: if isAuthenticated()
                               && isUserAuthenticated(userId);
+
+                match /records/{recordId} {
+                    allow create: if isAuthenticated()
+                                  && isUserAuthenticated(userId);
+                    allow read:   if isAuthenticated()
+                                  && isUserAuthenticated(userId);
+                    allow delete: if isAuthenticated()
+                                  && isUserAuthenticated(userId);
+                }
             }
         }
     }

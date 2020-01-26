@@ -27,7 +27,7 @@ export class FirebaseUserRepository implements UserRepository {
 
         return querySnapshot.docs.map(doc => {
             const data = doc.data()
-            return new Habit(doc.id, data.name)
+            return new Habit({ id: doc.id, name: data.name, recordList: data.recordList })
         })
     }
 

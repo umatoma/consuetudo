@@ -62,7 +62,7 @@ describe('Firestore security rules', () => {
             })
         })
 
-        describe('allow read', () => {
+        describe('allow read, update', () => {
             beforeEach(async () => {
                 const user = db.collection('users').doc(auth.uid)
                 await user.set({ habitList: [] })
@@ -73,6 +73,11 @@ describe('Firestore security rules', () => {
                 await assertSucceeds(user.get())
             })
 
+            it('can update', async () => {
+                const user = db.collection('users').doc(auth.uid)
+                await assertSucceeds(user.update({ a: 'b' }))
+            })
+
             describe('when userId and auth.uid are different', () => {
                 it('can NOT read', async () => {
                     const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
@@ -80,21 +85,7 @@ describe('Firestore security rules', () => {
                     const user = anotherDb.collection('users').doc(auth.uid)
                     await assertFails(user.get())
                 })
-            })
-        })
 
-        describe('allow update', () => {
-            beforeEach(async () => {
-                const user = db.collection('users').doc(auth.uid)
-                await user.set({ habitList: [] })
-            })
-
-            it('can update', async () => {
-                const user = db.collection('users').doc(auth.uid)
-                await assertSucceeds(user.update({ a: 'b' }))
-            })
-
-            describe('when userId and auth.uid are different', () => {
                 it('can NOT update', async () => {
                     const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
 
@@ -103,114 +94,84 @@ describe('Firestore security rules', () => {
                 })
             })
         })
+    })
 
-        describe('/users/{userId}/habits/{habitId}', () => {
+    // ---------- //
+
+    describe('/users/{userId}/habits/{habitId}', () => {
+        describe('allow read, update, delete', () => {
             const habitId = 'test-habit-id'
 
-            describe('allow create', () => {
-                it('can create', async () => {
-                    const habit = db
-                        .collection('users').doc(auth.uid)
-                        .collection('habits').doc(habitId)
-                    await assertSucceeds(habit.set({ name: 'test-title' }))
-                })
-
-                describe('when userId and auth.uid are different', () => {
-                    it('can NOT create', async () => {
-                        const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
-
-                        const habit = anotherDb
-                            .collection('users').doc(auth.uid)
-                            .collection('habits').doc(habitId)
-                        await assertFails(habit.set({ name: 'test-title' }))
-                    })
-                })
+            beforeEach(async () => {
+                const habit = db
+                    .collection('users').doc(auth.uid)
+                    .collection('habits').doc(habitId)
+                await assertSucceeds(habit.set({ name: 'test-title' }))
             })
 
-            describe('allow read', () => {
-                const habitId = 'test-habit-id'
-
-                beforeEach(async () => {
-                    const habit = db
-                        .collection('users').doc(auth.uid)
-                        .collection('habits').doc(habitId)
-                    await habit.set({ name: 'test-title' })
-                })
-
-                it('can read', async () => {
-                    const habit = db
-                        .collection('users').doc(auth.uid)
-                        .collection('habits').doc(habitId)
-                    await assertSucceeds(habit.get())
-                })
-
-                describe('when userId and auth.uid are different', () => {
-                    it('can NOT read', async () => {
-                        const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
-
-                        const habit = anotherDb
-                            .collection('users').doc(auth.uid)
-                            .collection('habits').doc(habitId)
-                        await assertFails(habit.get())
-                    })
-                })
+            it('can create', async () => {
+                const habit = db
+                    .collection('users').doc(auth.uid)
+                    .collection('habits').doc('new-habit-id')
+                await assertSucceeds(habit.set({ name: 'test-title' }))
             })
 
-            describe('allow update', () => {
-                const habitId = 'test-habit-id'
-
-                beforeEach(async () => {
-                    const habit = db
-                        .collection('users').doc(auth.uid)
-                        .collection('habits').doc(habitId)
-                    await habit.set({ name: 'test-title', userId: auth.uid })
-                })
-
-                it('can update', async () => {
-                    const habit = db
-                        .collection('users').doc(auth.uid)
-                        .collection('habits').doc(habitId)
-                    await assertSucceeds(habit.update({ name: 'new-name' }))
-                })
-
-                describe('when userId and auth.uid are different', () => {
-                    it('can NOT read', async () => {
-                        const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
-
-                        const habit = anotherDb
-                            .collection('users').doc(auth.uid)
-                            .collection('habits').doc(habitId)
-                        await assertFails(habit.update({ name: 'new-name' }))
-                    })
-                })
+            it('can read', async () => {
+                const habit = db
+                    .collection('users').doc(auth.uid)
+                    .collection('habits').doc(habitId)
+                await assertSucceeds(habit.get())
             })
 
-            describe('allow delete', () => {
-                const habitId = 'test-habit-id'
+            it('can update', async () => {
+                const habit = db
+                    .collection('users').doc(auth.uid)
+                    .collection('habits').doc(habitId)
+                await assertSucceeds(habit.update({ name: 'new-name' }))
+            })
 
-                beforeEach(async () => {
-                    const habit = db
+            it('can delete', async () => {
+                const habit = db
+                    .collection('users').doc(auth.uid)
+                    .collection('habits').doc(habitId)
+                await assertSucceeds(habit.delete())
+            })
+
+            describe('when userId and auth.uid are different', () => {
+                it('can NOT create', async () => {
+                    const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
+
+                    const habit = anotherDb
                         .collection('users').doc(auth.uid)
-                        .collection('habits').doc(habitId)
-                    await habit.set({ name: 'test-title', userId: auth.uid })
+                        .collection('habits').doc('new-habit-id')
+                    await assertFails(habit.set({ name: 'test-title' }))
                 })
 
-                it('can delete', async () => {
-                    const habit = db
+                it('can NOT read', async () => {
+                    const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
+
+                    const habit = anotherDb
                         .collection('users').doc(auth.uid)
                         .collection('habits').doc(habitId)
-                    await assertSucceeds(habit.delete())
+                    await assertFails(habit.get())
                 })
 
-                describe('when userId and auth.uid are different', () => {
-                    it('can NOT delete', async () => {
-                        const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
+                it('can NOT update', async () => {
+                    const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
 
-                        const habit = anotherDb
-                            .collection('users').doc(auth.uid)
-                            .collection('habits').doc(habitId)
-                        await assertFails(habit.delete())
-                    })
+                    const habit = anotherDb
+                        .collection('users').doc(auth.uid)
+                        .collection('habits').doc(habitId)
+                    await assertFails(habit.update({ name: 'new-name' }))
+                })
+
+                it('can NOT delete', async () => {
+                    const anotherDb = createFirestore({ uid: 'another-uid', email: 'test@example.com' })
+
+                    const habit = anotherDb
+                        .collection('users').doc(auth.uid)
+                        .collection('habits').doc(habitId)
+                    await assertFails(habit.delete())
                 })
             })
         })

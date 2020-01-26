@@ -1,16 +1,37 @@
-import React from 'react'
+import React, { ChangeEvent } from 'react'
 import { useHistory } from 'react-router-dom'
 import TopAppBar from '../_common/TopAppBar'
-import { useSelector } from 'react-redux'
-import StoreState from '../../store/StoreState'
-import { Habit } from '../../store/user/UserEntities'
 import { usePostHabitRoute, useViewHabitRoute } from '../_common/AppRouteHooks'
+import { useThunkDispatch, useUserHabitList } from '../_common/Hooks'
+import { pushUserHabitRecord, removeUserHabitRecord } from '../../store/user/UserActions'
+import { Habit, HabitRecord } from '../../store/user/UserEntities'
 
 const Home: React.FC = props => {
+    const dispatch = useThunkDispatch()
     const history = useHistory()
     const postHabitRoute = usePostHabitRoute()
     const viewHabitRoute = useViewHabitRoute()
-    const habitList = useSelector<StoreState, Habit[]>(state => state.user.habitList)
+    const habitList = useUserHabitList()
+
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    const date = now.getDate()
+
+    const handleChangeHabitCheckbox = (habit: Habit) => {
+        return (e: ChangeEvent<HTMLInputElement>) => {
+            const record = new HabitRecord({ habitId: habit.id, year, month, date })
+            console.log(e.target.checked, record)
+
+            if (e.target.checked) {
+                dispatch(pushUserHabitRecord(record))
+                    .catch((e) => window.alert(e.message))
+            } else {
+                dispatch(removeUserHabitRecord(record))
+                    .catch((e) => window.alert(e.message))
+            }
+        }
+    }
 
     return (
         <TopAppBar
@@ -52,8 +73,16 @@ const Home: React.FC = props => {
                         onClick={() => history.push(viewHabitRoute.createPath({ habitId: habit.id }))}
                     >
                         {habit.name}
-                        <div className="checkbox list-item__meta">
-                            <input type="checkbox" className="checkbox__native-control"/>
+                        <div
+                            className="checkbox list-item__meta"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <input
+                                type="checkbox"
+                                className="checkbox__native-control"
+                                checked={habit.isRecordedOn(year, month, date)}
+                                onChange={handleChangeHabitCheckbox(habit)}
+                            />
                             <div className="checkbox__background">
                                 <svg className="checkbox__checkmark" viewBox="0 0 24 24">
                                     <path

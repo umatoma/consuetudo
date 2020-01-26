@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 import { loadUserState } from '../../store/user/UserActions'
 import UserState from '../../store/user/UserState'
 import { Habit } from '../../store/user/UserEntities'
-import { useAppRouteFactory, useHomeRoute, useSignInRoute } from './AppRouteHooks'
+import { useHomeRoute, useSignInRoute } from './AppRouteHooks'
 
 export function useThunkDispatch(): ThunkDispatch<any, any, Action> {
     return useDispatch()
@@ -26,10 +26,14 @@ export function useUserSelector<T>(
     return useSelector<StoreState, T>(state => selector(state.user))
 }
 
-export function useUserHabit(habitId: string): Habit | undefined {
-    return useUserSelector<Habit | undefined>(state => {
-        return state.habitList.find(habit => habit.id === habitId)
+export function useUserHabitList(): Habit[] {
+    return useUserSelector<Habit[]>(state => {
+        return state.habitList
     })
+}
+
+export function useUserHabit(habitId: string): Habit | undefined {
+    return useUserHabitList().find(habit => habit.id === habitId)
 }
 
 export function useAuthStateEffect(authState: FirebaseAuthState) {
