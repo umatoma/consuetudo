@@ -3,11 +3,13 @@ import { useHistory } from 'react-router-dom'
 import TopAppBar from '../_common/TopAppBar'
 import { postUserHabit } from '../../store/user/UserActions'
 import { useThunkDispatch } from '../_common/Hooks'
+import { useHomeRoute } from '../_common/AppRouteHooks'
 
 
 const PostHabit: React.FC = props => {
     const dispatch = useThunkDispatch()
     const history = useHistory()
+    const homeRoute = useHomeRoute()
     const [habitName, setHabitName] = useState('')
 
     return (
@@ -35,7 +37,7 @@ const PostHabit: React.FC = props => {
                             <div className="layout-grid__cell layout-grid__cell--span-2">
                                 <button
                                     className="button button--cancel"
-                                    onClick={() => history.push('/home')}
+                                    onClick={() => history.push(homeRoute.createPath())}
                                 >
                                     キャンセル
                                 </button>
@@ -45,7 +47,7 @@ const PostHabit: React.FC = props => {
                                     className="button button--confirm"
                                     onClick={() => {
                                         dispatch(postUserHabit(habitName))
-                                            .then(() => history.push('/home'))
+                                            .then(() => history.push(homeRoute.createPath()))
                                             .catch(e => window.alert(e.message))
                                     }}
                                 >

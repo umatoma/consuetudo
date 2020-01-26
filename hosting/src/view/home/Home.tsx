@@ -4,12 +4,13 @@ import TopAppBar from '../_common/TopAppBar'
 import { useSelector } from 'react-redux'
 import StoreState from '../../store/StoreState'
 import { Habit } from '../../store/user/UserEntities'
-import { AppRoutePropsFactory } from '../_common/AppRoute'
+import { usePostHabitRoute, useViewHabitRoute } from '../_common/AppRouteHooks'
 
 const Home: React.FC = props => {
     const history = useHistory()
+    const postHabitRoute = usePostHabitRoute()
+    const viewHabitRoute = useViewHabitRoute()
     const habitList = useSelector<StoreState, Habit[]>(state => state.user.habitList)
-    const routeFactory = AppRoutePropsFactory.getInstance()
 
     return (
         <TopAppBar
@@ -17,7 +18,7 @@ const Home: React.FC = props => {
                 <button
                     key="post-user-habit"
                     className="icon-button"
-                    onClick={() => history.push('/postHabit')}
+                    onClick={() => history.push(postHabitRoute.createPath())}
                 >
                     add
                 </button>
@@ -48,10 +49,7 @@ const Home: React.FC = props => {
                         role="checkbox"
                         aria-checked="false"
                         key={habit.id}
-                        onClick={() => {
-                            const path = routeFactory.viewHabit().createEmbeddedPath({ habitId: habit.id })
-                            history.push(path)
-                        }}
+                        onClick={() => history.push(viewHabitRoute.createPath({ habitId: habit.id }))}
                     >
                         {habit.name}
                         <div className="checkbox list-item__meta">

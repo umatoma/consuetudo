@@ -4,7 +4,7 @@ import Calendar from 'react-calendar'
 import TopAppBar from '../_common/TopAppBar'
 import { useThunkDispatch, useUserHabit } from '../_common/Hooks'
 import { deleteUserHabit } from '../../store/user/UserActions'
-import { AppRoutePropsFactory } from '../_common/AppRoute'
+import { useHomeRoute } from '../_common/AppRouteHooks'
 
 interface ViewHabitProps {
     habitId: string
@@ -13,11 +13,10 @@ interface ViewHabitProps {
 const ViewHabit: React.FC<ViewHabitProps> = props => {
     const dispatch = useThunkDispatch()
     const history = useHistory()
+    const homeRoute = useHomeRoute()
 
     const habitId = props.habitId
     const habit = useUserHabit(habitId)
-
-    const routeFactory = AppRoutePropsFactory.getInstance()
 
     if (!habit) {
         return (
@@ -57,7 +56,7 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
                             className="button button--delete-habit"
                             onClick={() => {
                                 dispatch(deleteUserHabit(habit))
-                                    .then(() => history.push(routeFactory.home().path))
+                                    .then(() => history.push(homeRoute.createPath()))
                             }}
                         >
                             習慣を削除

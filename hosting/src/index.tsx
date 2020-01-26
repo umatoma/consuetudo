@@ -8,15 +8,23 @@ import firebaseConfig from './firebaseConfig.json' // Git管理外
 import store from './store'
 import App from './view/App'
 import { initializeFirebase } from './store/firebase/FirebaseActions'
+import { AppContext, AppContextProps } from './view/_common/AppContext'
+import { AppRouteFactory } from './view/_common/AppRoute'
 
 
 firebase.initializeApp(firebaseConfig)
 
 store.dispatch(initializeFirebase())
 
+const appContextProps: AppContextProps = {
+    appRouteFactory: new AppRouteFactory()
+}
+
 ReactDOM.render(
     <Provider store={store}>
-        <App/>
+        <AppContext.Provider value={appContextProps}>
+            <App/>
+        </AppContext.Provider>
     </Provider>,
     document.getElementById('root')
 )

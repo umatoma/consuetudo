@@ -5,68 +5,61 @@ import PostHabit from '../postHabit/PostHabit'
 import ViewHabit from '../viewHabit/ViewHabit'
 import React from 'react'
 
-interface AppRouteProps extends RouteProps {
+
+interface AppRoute<Params = void> extends RouteProps {
     path: string
+    render: (props: RouteComponentProps<any>) => React.ReactNode
+    createPath(params: Params): string
 }
 
-interface AppRoutePath<Params> {
-    createEmbeddedPath(params: Params): string
-}
 
-
-class HomeRouteProps implements AppRouteProps {
+export class HomeRoute implements AppRoute {
     path = '/home'
-    component = Home
     exact = true
+    render = () => <Home/>
+    createPath(params: void): string { return this.path }
 }
 
 
-export class SignInRouteProps implements AppRouteProps {
+export class SignInRoute implements AppRoute {
     path = '/signIn'
-    component = SignIn
     exact = true
+    render = () => <SignIn/>
+    createPath(params: void): string { return this.path }
 }
 
 
-export class PostHabitRouteProps implements AppRouteProps {
+export class PostHabitRoute implements AppRoute {
     path = '/postHabit'
-    component = PostHabit
     exact = true
+    render = () => <PostHabit/>
+    createPath(params: void): string { return this.path }
 }
 
 
 export interface ViewHabitRouteParams {
     habitId: string
 }
-export class ViewHabitRouteProps implements AppRouteProps, AppRoutePath<ViewHabitRouteParams> {
+export class ViewHabitRoute implements AppRoute<ViewHabitRouteParams> {
     path = '/viewHabit/:habitId'
+    exact = true
     render = (props: RouteComponentProps<ViewHabitRouteParams>) => (
         <ViewHabit habitId={props.match.params.habitId} />
     )
-    exact = true
-
-    createEmbeddedPath(params: ViewHabitRouteParams): string {
-        return `/viewHabit/${params.habitId}`
-    }
+    createPath(params: ViewHabitRouteParams): string { return `/viewHabit/${params.habitId}` }
 }
 
 
-export class AppRoutePropsFactory {
-    private static instance: AppRoutePropsFactory = new AppRoutePropsFactory()
-
-    static getInstance(): AppRoutePropsFactory {
-        return AppRoutePropsFactory.instance
-    }
-
-    private constructor(
-        private _home: HomeRouteProps = new HomeRouteProps(),
-        private _signIn: SignInRouteProps = new SignInRouteProps(),
-        private _postHabit: PostHabitRouteProps = new PostHabitRouteProps(),
-        private _viewHabit: ViewHabitRouteProps = new ViewHabitRouteProps()
+export class AppRouteFactory {
+    constructor(
+        private _home: HomeRoute = new HomeRoute(),
+        private _signIn: SignInRoute = new SignInRoute(),
+        private _postHabit: PostHabitRoute = new PostHabitRoute(),
+        private _viewHabit: ViewHabitRoute = new ViewHabitRoute()
     ) {}
 
-    home(): HomeRouteProps { return this._home }
-    signIn(): SignInRouteProps { return this._signIn }
-    postHabit(): PostHabitRouteProps { return this._postHabit }
-    viewHabit(): ViewHabitRouteProps { return this._viewHabit }
+    home(): HomeRoute { return this._home }
+    signIn(): SignInRoute { return this._signIn }
+    postHabit(): PostHabitRoute { return this._postHabit }
+    viewHabit(): ViewHabitRoute { return this._viewHabit }
 }

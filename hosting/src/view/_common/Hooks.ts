@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import StoreState from '../../store/StoreState'
 import { FirebaseAuthState, FirebaseState } from '../../store/firebase/FirebaseState'
 import { useHistory } from 'react-router-dom'
-import { AppRoutePropsFactory } from './AppRoute'
 import { useEffect } from 'react'
 import { loadUserState } from '../../store/user/UserActions'
 import UserState from '../../store/user/UserState'
 import { Habit } from '../../store/user/UserEntities'
+import { useAppRouteFactory, useHomeRoute, useSignInRoute } from './AppRouteHooks'
 
 export function useThunkDispatch(): ThunkDispatch<any, any, Action> {
     return useDispatch()
@@ -35,18 +35,20 @@ export function useUserHabit(habitId: string): Habit | undefined {
 export function useAuthStateEffect(authState: FirebaseAuthState) {
     const dispatch = useThunkDispatch()
     const history = useHistory()
-    const routePropsFactory = AppRoutePropsFactory.getInstance()
+    const homeRoute = useHomeRoute()
+    const signInRoute = useSignInRoute()
+
     useEffect(() => {
         switch (authState) {
             case FirebaseAuthState.Loading:
                 break;
             case FirebaseAuthState.Error:
             case FirebaseAuthState.SignedOut:
-                history.push(routePropsFactory.signIn().path)
+                history.push(signInRoute.createPath())
                 break;
             case FirebaseAuthState.SignedIn:
                 dispatch(loadUserState())
-                    .then(() => history.push(routePropsFactory.home().path))
+                    .then(() => history.push(homeRoute.createPath()))
                 break;
         }
     }, [authState])
