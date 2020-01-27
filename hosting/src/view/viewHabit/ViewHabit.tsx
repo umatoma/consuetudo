@@ -1,10 +1,11 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import Calendar from 'react-calendar'
+import Calendar, { MonthView } from 'react-calendar'
 import TopAppBar from '../_common/TopAppBar'
 import { useThunkDispatch, useUserHabit } from '../_common/Hooks'
 import { deleteUserHabit } from '../../store/user/UserActions'
 import { useHomeRoute } from '../_common/AppRouteHooks'
+import { HabitRecordDate } from '../../store/user/UserEntities'
 
 interface ViewHabitProps {
     habitId: string
@@ -29,7 +30,7 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
             <div className="top-nav">
                 <div className="top-nav__row">
                     <div className="top-app-bar__section top-nav__section--center">
-                        <div className="top-nav__title">習慣の成果</div>
+                        <div className="top-nav__title">習慣の記録</div>
                     </div>
                 </div>
                 <div className="top-nav__row top-nav__row--half-colored">
@@ -41,7 +42,14 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
             <div className="layout-grid">
                 <div className="layout-grid__inner">
                     <div className="layout-grid__cell">
-                        <Calendar/>
+                        <Calendar
+                            maxDetail="month"
+                            minDetail="month"
+                            tileClassName={({ date, view }) => {
+                                const recordDate = HabitRecordDate.fromDate(date)
+                                return habit?.isRecordedOn(recordDate) ? 'react-calendar__tile--is-recorded' : ''
+                            }}
+                        />
                     </div>
                     <div className="layout-grid__cell">
                         <button

@@ -372,9 +372,44 @@ $color-primary-light: #2cceff;
 .react-calendar {
     @extend .mdc-elevation--z2;
 
-    margin: 0 auto 0 auto;
+    margin: 0 auto 0 auto !important;
+    padding: 0 8px 8px 8px !important;
     border: none !important;
-    border-radius: 4px;
+    border-radius: 4px !important;
+
+    &__navigation {
+        &__label {
+            &:disabled {
+                background-color: #ffffff !important;
+                color: #000000 !important;
+            }
+        }
+    }
+
+    &__tile {
+        margin-bottom: 4px !important;
+
+        &--active {
+            background: none !important;
+            color: #000000 !important;
+            font-weight: bold !important;
+        }
+
+        &--is-recorded {
+            padding: 0 !important;
+
+            abbr {
+                color: #ffffff !important;
+                background-color: $color-primary-light !important;
+                display: block !important;
+                height: 42px !important;
+                width: 42px !important;
+                line-height: 42px !important;
+                border-radius: 21px !important;
+                margin: 0 auto !important;
+            }
+        }
+    }
 }
 
 // ----- //
