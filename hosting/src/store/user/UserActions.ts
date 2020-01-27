@@ -24,7 +24,7 @@ export const postUserHabit = (name: string): ThunkResult<Promise<void>> => {
         const state = getState()
 
         const userId = state.firebase.user!!.uid
-        const habit = Habit.newEntity(name)
+        const habit = Habit.newInstance(name)
         await userRepository.postUserHabit(userId, habit)
 
         await dispatch(loadUserState())

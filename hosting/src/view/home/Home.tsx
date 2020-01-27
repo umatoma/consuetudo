@@ -16,7 +16,7 @@ const Home: React.FC = props => {
 
     const handleChangeHabitCheckbox = (habit: Habit) => {
         return (e: ChangeEvent<HTMLInputElement>) => {
-            const record = new HabitRecord({ habitId: habit.id, ...recordDate })
+            const record = new HabitRecord({ habitId: habit.id, recordDate })
 
             if (e.target.checked) {
                 dispatch(pushUserHabitRecord(record))

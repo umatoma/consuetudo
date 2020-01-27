@@ -9,7 +9,7 @@ export class Habit implements Comparable {
     readonly name: string
     readonly recordList: HabitRecord[]
 
-    static newEntity(name: string): Habit {
+    static newInstance(name: string): Habit {
         const id = uuidv4()
         return new Habit({ id, name, recordList: [] })
     }
@@ -17,7 +17,7 @@ export class Habit implements Comparable {
     constructor(params: { id: string, name: string, recordList?: HabitRecord[] }) {
         this.id = params.id
         this.name = params.name
-        this.recordList = params.recordList?.map(r => new HabitRecord(r)) || []
+        this.recordList = params.recordList?.map(record => new HabitRecord(record)) || []
     }
 
     pushRecord(record: HabitRecord): Habit {
@@ -53,36 +53,26 @@ export class Habit implements Comparable {
 
 export class HabitRecord implements Comparable {
     readonly habitId: string
-    readonly year: number
-    readonly month: number
-    readonly date: number
+    readonly recordDate: HabitRecordDate
 
-    constructor(params: { habitId: string, year: number, month: number, date: number }) {
+    constructor(params: { habitId: string, recordDate: HabitRecordDate }) {
         this.habitId = params.habitId
-        this.year = params.year
-        this.month = params.month
-        this.date = params.date
+        this.recordDate = params.recordDate
     }
 
     isRecordedOn(recordDate: HabitRecordDate) {
-        return (
-            recordDate.year === this.year &&
-            recordDate.month === this.month &&
-            recordDate.date === this.date
-        )
+        return recordDate.isSameRecordDate(this.recordDate)
     }
 
     isEqual(target: HabitRecord): boolean {
         return (
             target.habitId === this.habitId &&
-            target.year === this.year &&
-            target.month === this.month &&
-            target.date === this.date
+            target.recordDate.isEqual(this.recordDate)
         )
     }
 }
 
-export class HabitRecordDate {
+export class HabitRecordDate implements Comparable {
     static fromDate(date: Date): HabitRecordDate {
         return new HabitRecordDate({
             year: date.getFullYear(),
@@ -111,5 +101,21 @@ export class HabitRecordDate {
         const date = new Date(this.year, this.month - 1, this.date)
         date.setDate(date.getDate() - 1)
         return HabitRecordDate.fromDate(date)
+    }
+
+    isSameRecordDate(recordDate: HabitRecordDate): boolean {
+        return (
+            recordDate.year === this.year &&
+            recordDate.month === this.month &&
+            recordDate.date === this.date
+        )
+    }
+
+    isEqual(target: HabitRecordDate): boolean {
+        return (
+            target.year === this.year &&
+            target.month === this.month &&
+            target.date === this.date
+        )
     }
 }
