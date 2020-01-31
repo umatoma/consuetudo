@@ -1,79 +1,85 @@
 import ThunkResult from '../ThunkResult'
-import { FirebaseUserRepository, UserRepository } from './UserRepository'
-import { Habit, HabitRecord } from './UserEntities'
-
-const userRepository: UserRepository = new FirebaseUserRepository()
+import UserRepository from './UserRepository'
+import { Habit } from '../../domain/user/Habit'
+import { HabitRecord } from '../../domain/user/HabitRecord'
 
 export enum UserActionType {
     SetHabitList = 'UserActions/SetHabitList'
 }
 
-export const loadUserState = (): ThunkResult<Promise<void>> => {
-    return async (dispatch, getState) => {
-        const state = getState()
-
-        const userId = state.firebase.user!!.uid
-        const habitList = await userRepository.getUserHabitList(userId)
-
-        dispatch({ type: UserActionType.SetHabitList, payload: habitList })
+export class UserActions {
+    constructor(private userRepository: UserRepository) {
     }
-}
 
-export const postUserHabit = (name: string): ThunkResult<Promise<void>> => {
-    return async (dispatch, getState) => {
-        const state = getState()
+    loadUserState(): ThunkResult<Promise<void>> {
+        return async (dispatch, getState) => {
+            const state = getState()
 
-        const userId = state.firebase.user!!.uid
-        const habit = Habit.newInstance(name)
-        await userRepository.postUserHabit(userId, habit)
+            const userId = state.firebase.user!!.uid
+            const habitList = await this.userRepository.getUserHabitList(userId)
 
-        await dispatch(loadUserState())
-    }
-}
-
-export const deleteUserHabit = (habit: Habit): ThunkResult<Promise<void>> => {
-    return async (dispatch, getState) => {
-        const state = getState()
-
-        const userId = state.firebase.user!!.uid
-        await userRepository.deleteUserHabit(userId, habit)
-
-        await dispatch(loadUserState())
-    }
-}
-
-export const pushUserHabitRecord = (habitRecord: HabitRecord): ThunkResult<Promise<void>> => {
-    return async (dispatch, getState) => {
-        const state = getState()
-
-        const habitList = state.user.habitList
-        const habit = habitList.find(habit => habit.id === habitRecord.habitId)
-        if (!habit) {
-            throw new Error('Failed to pushUserHabitRecord()')
+            dispatch({ type: UserActionType.SetHabitList, payload: habitList })
         }
-
-        const userId = state.firebase.user!!.uid
-        const newHabit = habit?.pushRecord(habitRecord)
-        await userRepository.putUserHabit(userId, newHabit)
-
-        await dispatch(loadUserState())
     }
-}
 
-export const removeUserHabitRecord = (habitRecord: HabitRecord): ThunkResult<Promise<void>> => {
-    return async (dispatch, getState) => {
-        const state = getState()
+    postUserHabit(name: string): ThunkResult<Promise<void>> {
+        return async (dispatch, getState) => {
+            const state = getState()
 
-        const habitList = state.user.habitList
-        const habit = habitList.find(habit => habit.id === habitRecord.habitId)
-        if (!habit) {
-            throw new Error('Failed to pushUserHabitRecord()')
+            const userId = state.firebase.user!!.uid
+            const habit = Habit.newInstance(name)
+            await this.userRepository.postUserHabit(userId, habit)
+
+            await dispatch(this.loadUserState())
         }
-
-        const userId = state.firebase.user!!.uid
-        const newHabit = habit?.removeRecord(habitRecord)
-        await userRepository.putUserHabit(userId, newHabit)
-
-        await dispatch(loadUserState())
     }
+
+    deleteUserHabit(habit: Habit): ThunkResult<Promise<void>> {
+        return async (dispatch, getState) => {
+            const state = getState()
+
+            const userId = state.firebase.user!!.uid
+            await this.userRepository.deleteUserHabit(userId, habit)
+
+            await dispatch(this.loadUserState())
+        }
+    }
+
+    pushUserHabitRecord(habitRecord: HabitRecord): ThunkResult<Promise<void>> {
+        return async (dispatch, getState) => {
+            const state = getState()
+
+            const habitList = state.user.habitList
+            const habit = habitList.find(habit => habit.id === habitRecord.habitId)
+            if (!habit) {
+                throw new Error('Failed to pushUserHabitRecord()')
+            }
+
+            const userId = state.firebase.user!!.uid
+            const newHabit = habit?.pushRecord(habitRecord)
+            await this.userRepository.putUserHabit(userId, newHabit)
+
+            await dispatch(this.loadUserState())
+        }
+    }
+
+    removeUserHabitRecord(habitRecord: HabitRecord): ThunkResult<Promise<void>> {
+        return async (dispatch, getState) => {
+            const state = getState()
+
+            const habitList = state.user.habitList
+            const habit = habitList.find(habit => habit.id === habitRecord.habitId)
+            if (!habit) {
+                throw new Error('Failed to pushUserHabitRecord()')
+            }
+
+            const userId = state.firebase.user!!.uid
+            const newHabit = habit?.removeRecord(habitRecord)
+            await this.userRepository.putUserHabit(userId, newHabit)
+
+            await dispatch(this.loadUserState())
+        }
+    }
+
 }
+

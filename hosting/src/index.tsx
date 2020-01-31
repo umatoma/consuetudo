@@ -7,18 +7,29 @@ import 'firebase/firestore'
 import firebaseConfig from './firebaseConfig.json' // Git管理外
 import store from './store'
 import App from './view/App'
-import { initializeFirebase } from './store/firebase/FirebaseActions'
-import { AppContext, AppContextProps } from './view/_common/AppContext'
-import { AppRouteFactory } from './view/_common/AppRoute'
+import { FirebaseActions } from './store/firebase/FirebaseActions'
+import { AppContext, AppContextProps } from './view/AppContext'
+import { HomeRoute, PostHabitRoute, SignInRoute, ViewHabitRoute } from './view/AppRoute'
+import { UserActions } from './store/user/UserActions'
+import { FirebaseUserRepository } from './data/firebase/FirebaseUserRepository'
 
 
 firebase.initializeApp(firebaseConfig)
 
-store.dispatch(initializeFirebase())
-
+const firebaseActions = new FirebaseActions()
+const userActions = new UserActions(new FirebaseUserRepository())
 const appContextProps: AppContextProps = {
-    appRouteFactory: new AppRouteFactory()
+    appRoutes: {
+        home: new HomeRoute(),
+        signIn: new SignInRoute(),
+        postHabit: new PostHabitRoute(),
+        viewHabit: new ViewHabitRoute(),
+    },
+    firebaseActions,
+    userActions,
 }
+
+store.dispatch(firebaseActions.initializeFirebase())
 
 ReactDOM.render(
     <Provider store={store}>

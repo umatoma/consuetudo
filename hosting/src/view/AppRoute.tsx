@@ -1,8 +1,8 @@
 import { RouteComponentProps, RouteProps } from 'react-router-dom'
-import Home from '../home/Home'
-import SignIn from '../signIn/SignIn'
-import PostHabit from '../postHabit/PostHabit'
-import ViewHabit from '../viewHabit/ViewHabit'
+import Home from './pages/home/Home'
+import SignIn from './pages/signIn/SignIn'
+import PostHabit from './pages/postHabit/PostHabit'
+import ViewHabit from './pages/viewHabit/ViewHabit'
 import React from 'react'
 
 
@@ -47,19 +47,4 @@ export class ViewHabitRoute implements AppRoute<ViewHabitRouteParams> {
         <ViewHabit habitId={props.match.params.habitId} />
     )
     createPath(params: ViewHabitRouteParams): string { return `/viewHabit/${params.habitId}` }
-}
-
-
-export class AppRouteFactory {
-    constructor(
-        private _home: HomeRoute = new HomeRoute(),
-        private _signIn: SignInRoute = new SignInRoute(),
-        private _postHabit: PostHabitRoute = new PostHabitRoute(),
-        private _viewHabit: ViewHabitRoute = new ViewHabitRoute()
-    ) {}
-
-    home(): HomeRoute { return this._home }
-    signIn(): SignInRoute { return this._signIn }
-    postHabit(): PostHabitRoute { return this._postHabit }
-    viewHabit(): ViewHabitRoute { return this._viewHabit }
 }

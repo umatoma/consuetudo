@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { useDispatch } from 'react-redux'
-import { signIn } from '../../store/firebase/FirebaseActions'
+import { useFirebaseActions } from '../../hooks/StateHooks'
 
 const SignIn: React.FC = props => {
     const dispatch = useDispatch()
+    const firebaseActions = useFirebaseActions()
 
     return (
         <div>
@@ -11,7 +12,7 @@ const SignIn: React.FC = props => {
             <h1 className="text text--sign-in-title">Consuetudo</h1>
             <button
                 className="button button--sign-in-google"
-                onClick={() => dispatch(signIn())}
+                onClick={() => dispatch(firebaseActions.signIn())}
             >
                 <span className="button__label">
                     Sign in with Google

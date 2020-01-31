@@ -1,7 +1,7 @@
 import { AnyAction, Reducer } from 'redux'
 import UserState from './UserState'
 import { UserActionType } from './UserActions'
-import { Habit } from './UserEntities'
+import { Habit } from '../../domain/user/Habit'
 
 const initialState: UserState = {
     habitList: []

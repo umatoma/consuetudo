@@ -1,8 +1,8 @@
 import React, { ReactElement, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { signOut } from '../../store/firebase/FirebaseActions'
-import { useHomeRoute } from './AppRouteHooks'
+import { useHomeRoute } from '../hooks/AppRouteHooks'
+import { useFirebaseActions } from '../hooks/StateHooks'
 
 interface TopAppBarProps {
     iconButtonList?: ReactElement[]
@@ -14,6 +14,7 @@ const defaultProps: TopAppBarProps = {
 
 const TopAppBar: React.FC<TopAppBarProps> = props => {
     const dispatch = useDispatch()
+    const firebaseActions = useFirebaseActions()
     const history = useHistory()
     const homeRoute = useHomeRoute()
     const [isOpenMenu, setIsOpenMenu] = useState(false)
@@ -45,7 +46,7 @@ const TopAppBar: React.FC<TopAppBarProps> = props => {
                         <li
                             className="list-item"
                             role="menuitem"
-                            onClick={() => dispatch(signOut())}
+                            onClick={() => dispatch(firebaseActions.signOut())}
                         >
                             <span className="list-item__text">ログアウト</span>
                         </li>

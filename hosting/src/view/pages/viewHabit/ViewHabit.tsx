@@ -1,11 +1,10 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Calendar, { MonthView } from 'react-calendar'
-import TopAppBar from '../_common/TopAppBar'
-import { useThunkDispatch, useUserHabit } from '../_common/Hooks'
-import { deleteUserHabit } from '../../store/user/UserActions'
-import { useHomeRoute } from '../_common/AppRouteHooks'
-import { HabitRecordDate } from '../../store/user/UserEntities'
+import TopAppBar from '../../element/TopAppBar'
+import { useThunkDispatch, useUserActions, useUserHabit } from '../../hooks/StateHooks'
+import { useHomeRoute } from '../../hooks/AppRouteHooks'
+import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 
 interface ViewHabitProps {
     habitId: string
@@ -13,6 +12,7 @@ interface ViewHabitProps {
 
 const ViewHabit: React.FC<ViewHabitProps> = props => {
     const dispatch = useThunkDispatch()
+    const userActions = useUserActions()
     const history = useHistory()
     const homeRoute = useHomeRoute()
 
@@ -63,7 +63,7 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
                         <button
                             className="button button--delete-habit"
                             onClick={() => {
-                                dispatch(deleteUserHabit(habit))
+                                dispatch(userActions.deleteUserHabit(habit))
                                     .then(() => history.push(homeRoute.createPath()))
                             }}
                         >

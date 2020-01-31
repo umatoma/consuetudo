@@ -1,4 +1,4 @@
-import { Habit } from './UserEntities'
+import { Habit } from '../../domain/user/Habit'
 
 type UserState = {
     habitList: Habit[]

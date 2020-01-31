@@ -1,11 +1,15 @@
 import React from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { FirebaseAuthState } from '../store/firebase/FirebaseState'
-import { useAuthStateEffect, useFirebaseSelector } from './_common/Hooks'
-import { useAppRouteFactory } from './_common/AppRouteHooks'
+import { useAuthStateEffect, useFirebaseSelector } from './hooks/StateHooks'
+import { useHomeRoute, usePostHabitRoute, useSignInRoute, useViewHabitRoute } from './hooks/AppRouteHooks'
 
 const AppInner: React.FC = props => {
-    const appRouteFactory = useAppRouteFactory()
+    const signInRoute = useSignInRoute()
+    const homeRoute = useHomeRoute()
+    const postHabitRoute = usePostHabitRoute()
+    const viewHabitRoute = useViewHabitRoute()
+
     const authState = useFirebaseSelector<FirebaseAuthState>(state => state.authState)
     useAuthStateEffect(authState)
 
@@ -17,10 +21,10 @@ const AppInner: React.FC = props => {
 
     return (
         <Switch>
-            <Route {...appRouteFactory.signIn()} />
-            <Route {...appRouteFactory.home()} />
-            <Route {...appRouteFactory.postHabit()} />
-            <Route {...appRouteFactory.viewHabit()} />
+            <Route {...signInRoute} />
+            <Route {...homeRoute} />
+            <Route {...postHabitRoute} />
+            <Route {...viewHabitRoute} />
             <Route path="*">
                 <div>Not Found</div>
             </Route>

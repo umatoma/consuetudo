@@ -1,13 +1,15 @@
 import React, { ChangeEvent, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import TopAppBar from '../_common/TopAppBar'
-import { usePostHabitRoute, useViewHabitRoute } from '../_common/AppRouteHooks'
-import { useThunkDispatch, useUserHabitList } from '../_common/Hooks'
-import { pushUserHabitRecord, removeUserHabitRecord } from '../../store/user/UserActions'
-import { Habit, HabitRecord, HabitRecordDate } from '../../store/user/UserEntities'
+import TopAppBar from '../../element/TopAppBar'
+import { usePostHabitRoute, useViewHabitRoute } from '../../hooks/AppRouteHooks'
+import { useThunkDispatch, useUserActions, useUserHabitList } from '../../hooks/StateHooks'
+import { Habit } from '../../../domain/user/Habit'
+import { HabitRecord } from '../../../domain/user/HabitRecord'
+import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 
 const Home: React.FC = props => {
     const dispatch = useThunkDispatch()
+    const userActions = useUserActions()
     const history = useHistory()
     const postHabitRoute = usePostHabitRoute()
     const viewHabitRoute = useViewHabitRoute()
@@ -19,10 +21,10 @@ const Home: React.FC = props => {
             const record = new HabitRecord({ habitId: habit.id, recordDate })
 
             if (e.target.checked) {
-                dispatch(pushUserHabitRecord(record))
+                dispatch(userActions.pushUserHabitRecord(record))
                     .catch((e) => window.alert(e.message))
             } else {
-                dispatch(removeUserHabitRecord(record))
+                dispatch(userActions.removeUserHabitRecord(record))
                     .catch((e) => window.alert(e.message))
             }
         }
