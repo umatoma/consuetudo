@@ -8,6 +8,7 @@ import { HabitRecord } from '../../../domain/user/HabitRecord'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 import { ReactWrapper } from 'enzyme'
 import { ViewHabitRoute } from '../../AppRoute'
+import { UserActions } from '../../../store/user/UserActions'
 
 const historyPushMock = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -48,10 +49,11 @@ describe('<Home/>', () => {
             ]
         }
     })
+    const userActions = new UserActions(store.dispatch, null as any)
 
     beforeEach(() => {
         sandbox.useFakeTimers(new Date('2999-01-23T00:00+0900'))
-        page = mountWithTestWrapper(<Home/>, { store })
+        page = mountWithTestWrapper(<Home/>, { store, userActions })
     })
 
     afterEach(() => {
@@ -124,6 +126,62 @@ describe('<Home/>', () => {
             const viewHabitRoute = new ViewHabitRoute()
             const path = viewHabitRoute.createPath({ habitId: 'habit-id-1' })
             expect(historyPushMock).toHaveBeenCalledWith(path)
+        })
+    })
+
+    describe('on check habit item', () => {
+
+        let pushUserHabitRecordStub: sinon.SinonStub<[HabitRecord], Promise<void>>
+
+        beforeEach(() => {
+            pushUserHabitRecordStub = sandbox
+                .stub(userActions, 'pushUserHabitRecord')
+                .resolves()
+
+            page.findWhere(wrapper => (
+                wrapper.type() === 'li' &&
+                wrapper.text().includes('habit-name-2')
+            )).find('input').simulate('change', { target: { checked: true } })
+        })
+
+        it('should call pushUserHabitRecord action', () => {
+            expect(pushUserHabitRecordStub.calledOnce).toBeTruthy()
+            expect(
+                pushUserHabitRecordStub
+                    .getCall(0)
+                    .args[0]
+                    .isRecordedOn(
+                        new HabitRecordDate({ year: 2999, month: 1, date: 23 })
+                    )
+            ).toBeTruthy()
+        })
+    })
+
+    describe('on uncheck habit item', () => {
+
+        let removeUserHabitRecordStub: sinon.SinonStub<[HabitRecord], Promise<void>>
+
+        beforeEach(() => {
+            removeUserHabitRecordStub = sandbox
+                .stub(userActions, 'removeUserHabitRecord')
+                .resolves()
+
+            page.findWhere(wrapper => (
+                wrapper.type() === 'li' &&
+                wrapper.text().includes('habit-name-1')
+            )).find('input').simulate('change', { target: { checked: false } })
+        })
+
+        it('should call removeUserHabitRecord action', () => {
+            expect(removeUserHabitRecordStub.calledOnce).toBeTruthy()
+            expect(
+                removeUserHabitRecordStub
+                    .getCall(0)
+                    .args[0]
+                    .isRecordedOn(
+                        new HabitRecordDate({ year: 2999, month: 1, date: 23 })
+                    )
+            ).toBeTruthy()
         })
     })
 })

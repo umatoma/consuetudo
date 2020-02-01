@@ -1,6 +1,6 @@
 import { AppContext, AppContextProps } from '../view/AppContext'
 import { Provider } from 'react-redux'
-import React, { ReactElement } from 'react'
+import React, { ChangeEvent, ReactElement } from 'react'
 import { createStore, PreloadedState, Reducer, Store } from 'redux'
 import { mount } from 'enzyme'
 import { AppRoutes, createAppRoutes } from '../view/AppRoute'
@@ -64,4 +64,10 @@ export function mountWithTestWrapper(
             {node}
         </TestWrapper>
     )
+}
+
+export function createChangeEvent(target: any) {
+    return {
+        target: target
+    }
 }
