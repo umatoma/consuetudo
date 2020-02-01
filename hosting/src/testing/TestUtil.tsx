@@ -1,11 +1,17 @@
 import { AppContext, AppContextProps } from '../view/AppContext'
 import { Provider } from 'react-redux'
 import React, { ReactElement } from 'react'
-import { createStore, Reducer, Store } from 'redux'
+import { createStore, PreloadedState, Reducer, Store } from 'redux'
 import { mount } from 'enzyme'
 import { AppRoutes, createAppRoutes } from '../view/AppRoute'
 import { FirebaseActions } from '../store/firebase/FirebaseActions'
 import { UserActions } from '../store/user/UserActions'
+import { MemoryRouter } from 'react-router-dom'
+import StoreState from '../store/StoreState'
+import { FirebaseState } from '../store/firebase/FirebaseState'
+import UserState from '../store/user/UserState'
+import Home from '../view/pages/home/Home'
+import Mock = jest.Mock
 
 export interface TestWrapperProps {
     store: Store,
@@ -16,15 +22,25 @@ export const TestWrapper: React.FC<TestWrapperProps> = props => {
     return (
         <Provider store={props.store}>
             <AppContext.Provider value={props.appContextProps}>
-                {props.children}
+                <MemoryRouter>
+                    {props.children}
+                </MemoryRouter>
             </AppContext.Provider>
         </Provider>
     )
 }
 
-export function createTestStore(): Store {
+export function createTestStore(
+    preloadedState: {
+        firebase?: FirebaseState,
+        user?: UserState,
+    } = {}
+): Store {
     const reducer: Reducer = (state => state)
-    return createStore(reducer, {})
+    return createStore(reducer, {
+        firebase: preloadedState.firebase || null as any,
+        user: preloadedState.user || null as any,
+    } as StoreState)
 }
 
 export function mountWithTestWrapper(

@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TopAppBar from '../../element/TopAppBar'
-import { useThunkDispatch, useUserActions } from '../../hooks/StateHooks'
+import { useUserActions } from '../../hooks/StateHooks'
 import { useHomeRoute } from '../../hooks/AppRouteHooks'
 
 
 const PostHabit: React.FC = props => {
-    const dispatch = useThunkDispatch()
     const userActions = useUserActions()
     const history = useHistory()
     const homeRoute = useHomeRoute()
@@ -46,7 +45,7 @@ const PostHabit: React.FC = props => {
                                 <button
                                     className="button button--confirm"
                                     onClick={() => {
-                                        dispatch(userActions.postUserHabit(habitName))
+                                        userActions.postUserHabit(habitName)
                                             .then(() => history.push(homeRoute.createPath()))
                                             .catch(e => window.alert(e.message))
                                     }}

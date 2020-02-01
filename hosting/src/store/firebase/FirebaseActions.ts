@@ -2,6 +2,7 @@ import { FirebaseAuthState } from './FirebaseState'
 import * as firebase from 'firebase/app'
 import { ThunkDispatch } from 'redux-thunk'
 import { Action } from 'redux'
+import StoreState from '../StoreState'
 
 export enum FirebaseActionType {
     SetAuthState = 'FirebaseAction/SetAuthState'
@@ -9,11 +10,11 @@ export enum FirebaseActionType {
 
 export class FirebaseActions {
 
-    constructor(private dispatch: ThunkDispatch<any, any, Action>) {
+    constructor(private dispatch: ThunkDispatch<StoreState, any, Action>) {
     }
 
     initializeFirebase(): void {
-        return this.dispatch((dispatch, getState) => {
+        return this.dispatch((dispatch) => {
             dispatch({ type: FirebaseActionType.SetAuthState, authState: FirebaseAuthState.Loading })
 
             firebase

@@ -18,7 +18,7 @@ import { BrowserRouter } from 'react-router-dom'
 firebase.initializeApp(firebaseConfig)
 
 const firebaseActions = new FirebaseActions(store.dispatch)
-const userActions = new UserActions(new FirebaseUserRepository())
+const userActions = new UserActions(store.dispatch, new FirebaseUserRepository())
 const appContextProps: AppContextProps = {
     appRoutes: createAppRoutes(),
     firebaseActions,

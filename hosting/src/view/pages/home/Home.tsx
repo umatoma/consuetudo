@@ -2,13 +2,12 @@ import React, { ChangeEvent, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TopAppBar from '../../element/TopAppBar'
 import { usePostHabitRoute, useViewHabitRoute } from '../../hooks/AppRouteHooks'
-import { useThunkDispatch, useUserActions, useUserHabitList } from '../../hooks/StateHooks'
+import { useUserActions, useUserHabitList } from '../../hooks/StateHooks'
 import { Habit } from '../../../domain/user/Habit'
 import { HabitRecord } from '../../../domain/user/HabitRecord'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 
 const Home: React.FC = props => {
-    const dispatch = useThunkDispatch()
     const userActions = useUserActions()
     const history = useHistory()
     const postHabitRoute = usePostHabitRoute()
@@ -21,10 +20,10 @@ const Home: React.FC = props => {
             const record = new HabitRecord({ habitId: habit.id, recordDate })
 
             if (e.target.checked) {
-                dispatch(userActions.pushUserHabitRecord(record))
+                userActions.pushUserHabitRecord(record)
                     .catch((e) => window.alert(e.message))
             } else {
-                dispatch(userActions.removeUserHabitRecord(record))
+                userActions.removeUserHabitRecord(record)
                     .catch((e) => window.alert(e.message))
             }
         }
@@ -79,7 +78,9 @@ const Home: React.FC = props => {
                         role="checkbox"
                         aria-checked="false"
                         key={habit.id}
-                        onClick={() => history.push(viewHabitRoute.createPath({ habitId: habit.id }))}
+                        onClick={() => {
+                            history.push(viewHabitRoute.createPath({ habitId: habit.id }))
+                        }}
                     >
                         {habit.name}
                         <div

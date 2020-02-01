@@ -47,7 +47,6 @@ export function useUserHabit(habitId: string): Habit | undefined {
 }
 
 export function useAuthStateEffect(authState: FirebaseAuthState) {
-    const dispatch = useThunkDispatch()
     const history = useHistory()
     const homeRoute = useHomeRoute()
     const signInRoute = useSignInRoute()
@@ -62,7 +61,7 @@ export function useAuthStateEffect(authState: FirebaseAuthState) {
                 history.push(signInRoute.createPath())
                 break;
             case FirebaseAuthState.SignedIn:
-                dispatch(userActions.loadUserState())
+                userActions.loadUserState()
                     .then(() => history.push(homeRoute.createPath()))
                 break;
         }
