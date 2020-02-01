@@ -12,11 +12,12 @@ import { AppContext, AppContextProps } from './view/AppContext'
 import { createAppRoutes } from './view/AppRoute'
 import { UserActions } from './store/user/UserActions'
 import { FirebaseUserRepository } from './data/firebase/FirebaseUserRepository'
+import { BrowserRouter } from 'react-router-dom'
 
 
 firebase.initializeApp(firebaseConfig)
 
-const firebaseActions = new FirebaseActions()
+const firebaseActions = new FirebaseActions(store.dispatch)
 const userActions = new UserActions(new FirebaseUserRepository())
 const appContextProps: AppContextProps = {
     appRoutes: createAppRoutes(),
@@ -24,12 +25,14 @@ const appContextProps: AppContextProps = {
     userActions,
 }
 
-store.dispatch(firebaseActions.initializeFirebase())
+firebaseActions.initializeFirebase()
 
 ReactDOM.render(
     <Provider store={store}>
         <AppContext.Provider value={appContextProps}>
-            <App/>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
         </AppContext.Provider>
     </Provider>,
     document.getElementById('root')

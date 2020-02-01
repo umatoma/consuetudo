@@ -4,7 +4,8 @@ import { FirebaseAuthState } from '../store/firebase/FirebaseState'
 import { useAuthStateEffect, useFirebaseSelector } from './hooks/StateHooks'
 import { useAppRoutes } from './hooks/AppRouteHooks'
 
-const AppInner: React.FC = props => {
+
+const App: React.FC = props => {
     const appRoutes = useAppRoutes()
     const authState = useFirebaseSelector<FirebaseAuthState>(state => state.authState)
     useAuthStateEffect(authState)
@@ -16,31 +17,23 @@ const AppInner: React.FC = props => {
     }
 
     return (
-        <Switch>
-            <Route {...appRoutes.signIn} />
-            <Route {...appRoutes.home} />
-            <Route {...appRoutes.postHabit} />
-            <Route {...appRoutes.viewHabit} />
-            <Route {...appRoutes.putHabit} />
-            <Route path="*">
-                <div>Not Found</div>
-            </Route>
-        </Switch>
-    )
-}
-
-const App: React.FC = props => {
-    return (
-        <BrowserRouter>
-            <div className="app">
-                <div className="app__container">
-                    <AppInner/>
-                </div>
-                <div className="app__footer">
-                    <div className="app__footer-title">Consuetudo</div>
-                </div>
+        <div className="app">
+            <div className="app__container">
+                <Switch>
+                    <Route {...appRoutes.signIn} />
+                    <Route {...appRoutes.home} />
+                    <Route {...appRoutes.postHabit} />
+                    <Route {...appRoutes.viewHabit} />
+                    <Route {...appRoutes.putHabit} />
+                    <Route path="*">
+                        <div>Not Found</div>
+                    </Route>
+                </Switch>
             </div>
-        </BrowserRouter>
+            <div className="app__footer">
+                <div className="app__footer-title">Consuetudo</div>
+            </div>
+        </div>
     )
 }
 

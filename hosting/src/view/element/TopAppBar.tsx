@@ -46,7 +46,7 @@ const TopAppBar: React.FC<TopAppBarProps> = props => {
                         <li
                             className="list-item"
                             role="menuitem"
-                            onClick={() => dispatch(firebaseActions.signOut())}
+                            onClick={() => firebaseActions.signOut()}
                         >
                             <span className="list-item__text">ログアウト</span>
                         </li>
