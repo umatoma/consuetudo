@@ -34,6 +34,17 @@ export class UserActions {
         }
     }
 
+    putUserHabit(habit: Habit): ThunkResult<Promise<void>> {
+        return async (dispatch, getState) => {
+            const state = getState()
+
+            const userId = state.firebase.user!!.uid
+            await this.userRepository.putUserHabit(userId, habit)
+
+            await dispatch(this.loadUserState())
+        }
+    }
+
     deleteUserHabit(habit: Habit): ThunkResult<Promise<void>> {
         return async (dispatch, getState) => {
             const state = getState()

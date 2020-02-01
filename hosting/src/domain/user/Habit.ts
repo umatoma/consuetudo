@@ -19,26 +19,22 @@ export class Habit implements Comparable {
         this.recordList = params.recordList?.map(record => new HabitRecord(record)) || []
     }
 
+    setName(name: string): Habit {
+        return new Habit({ ...this, name })
+    }
+
     pushRecord(record: HabitRecord): Habit {
         if (this.recordList.find(r => r.isEqual(record))) {
             throw new Error('Failed to pushRecord()')
         }
 
-        return new Habit({
-            id: this.id,
-            name: this.name,
-            recordList: [...this.recordList, record]
-        })
+        const recordList = [...this.recordList, record]
+        return new Habit({ ...this, recordList })
     }
 
     removeRecord(record: HabitRecord): Habit {
         const recordList = this.recordList.filter(r => !r.isEqual(record))
-
-        return new Habit({
-            id: this.id,
-            name: this.name,
-            recordList: recordList
-        })
+        return new Habit({ ...this, recordList })
     }
 
     isRecordedOn(recordDate: HabitRecordDate): boolean {

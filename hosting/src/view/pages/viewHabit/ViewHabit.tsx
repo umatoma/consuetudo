@@ -1,9 +1,9 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import Calendar, { MonthView } from 'react-calendar'
+import Calendar from 'react-calendar'
 import TopAppBar from '../../element/TopAppBar'
 import { useThunkDispatch, useUserActions, useUserHabit } from '../../hooks/StateHooks'
-import { useHomeRoute } from '../../hooks/AppRouteHooks'
+import { useHomeRoute, usePutHabitRoute } from '../../hooks/AppRouteHooks'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 
 interface ViewHabitProps {
@@ -15,6 +15,7 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
     const userActions = useUserActions()
     const history = useHistory()
     const homeRoute = useHomeRoute()
+    const putHabitRoute = usePutHabitRoute()
 
     const habitId = props.habitId
     const habit = useUserHabit(habitId)
@@ -54,7 +55,7 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
                     <div className="layout-grid__cell">
                         <button
                             className="button button--put-habit"
-                            onClick={() => window.alert('編集')}
+                            onClick={() => history.push(putHabitRoute.createPath({ habitId: habit?.id }))}
                         >
                             習慣を編集
                         </button>

@@ -1,6 +1,10 @@
 import { useContext } from 'react'
 import { AppContext } from '../AppContext'
-import { HomeRoute, PostHabitRoute, SignInRoute, ViewHabitRoute } from '../AppRoute'
+import { AppRoutes, HomeRoute, PostHabitRoute, PutHabitRoute, SignInRoute, ViewHabitRoute } from '../AppRoute'
+
+export function useAppRoutes(): AppRoutes {
+    return useContext(AppContext).appRoutes
+}
 
 export function useHomeRoute(): HomeRoute {
     return useContext(AppContext).appRoutes.home
@@ -16,4 +20,8 @@ export function usePostHabitRoute(): PostHabitRoute {
 
 export function useViewHabitRoute(): ViewHabitRoute {
     return useContext(AppContext).appRoutes.viewHabit
+}
+
+export function usePutHabitRoute(): PutHabitRoute {
+    return useContext(AppContext).appRoutes.putHabit
 }

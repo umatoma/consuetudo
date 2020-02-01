@@ -1,15 +1,10 @@
 import React from 'react'
-import { HomeRoute, PostHabitRoute, SignInRoute, ViewHabitRoute } from './AppRoute'
+import { AppRoutes } from './AppRoute'
 import { UserActions } from '../store/user/UserActions'
 import { FirebaseActions } from '../store/firebase/FirebaseActions'
 
 export interface AppContextProps {
-    appRoutes: {
-        home: HomeRoute,
-        signIn: SignInRoute,
-        postHabit: PostHabitRoute,
-        viewHabit: ViewHabitRoute,
-    },
+    appRoutes: AppRoutes,
     firebaseActions: FirebaseActions,
     userActions: UserActions
 }

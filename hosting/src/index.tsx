@@ -9,7 +9,7 @@ import store from './store'
 import App from './view/App'
 import { FirebaseActions } from './store/firebase/FirebaseActions'
 import { AppContext, AppContextProps } from './view/AppContext'
-import { HomeRoute, PostHabitRoute, SignInRoute, ViewHabitRoute } from './view/AppRoute'
+import { createAppRoutes } from './view/AppRoute'
 import { UserActions } from './store/user/UserActions'
 import { FirebaseUserRepository } from './data/firebase/FirebaseUserRepository'
 
@@ -19,12 +19,7 @@ firebase.initializeApp(firebaseConfig)
 const firebaseActions = new FirebaseActions()
 const userActions = new UserActions(new FirebaseUserRepository())
 const appContextProps: AppContextProps = {
-    appRoutes: {
-        home: new HomeRoute(),
-        signIn: new SignInRoute(),
-        postHabit: new PostHabitRoute(),
-        viewHabit: new ViewHabitRoute(),
-    },
+    appRoutes: createAppRoutes(),
     firebaseActions,
     userActions,
 }
