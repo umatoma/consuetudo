@@ -1,34 +1,57 @@
 import React from 'react'
 import sinon from 'sinon'
 import { ReactWrapper } from 'enzyme'
-import PostHabit from './PostHabit'
+import PutHabit from './PutHabit'
 import { createTestStore, mountWithTestWrapper } from '../../../testing/TestUtil'
 import { UserActions } from '../../../store/user/UserActions'
 import { createMemoryHistory } from 'history'
 import { HomeRoute } from '../../routing/AppRoute'
+import { Habit } from '../../../domain/user/Habit'
 
-describe('<PostHabit/>', () => {
+describe('<PutHabit/>', () => {
 
     let page: ReactWrapper
-    let postUserHabitStub: sinon.SinonStub<[string], Promise<void>>
+    let putUserHabitStub: sinon.SinonStub<[Habit], Promise<void>>
+
+    const habitList = [
+        new Habit({
+            id: 'habit-id-1',
+            name: 'habit-name-1',
+            recordList: []
+        }),
+    ]
 
     const sandbox = sinon.createSandbox()
-    const store = createTestStore()
+    const store = createTestStore({
+        user: {
+            habitList: habitList
+        }
+    })
     const userActions = new UserActions(store.dispatch, null as any)
     const history = createMemoryHistory()
 
+    const testHabitId = 'habit-id-1'
+
     beforeEach(() => {
-        postUserHabitStub = sandbox.stub(userActions, 'postUserHabit')
-        page = mountWithTestWrapper(<PostHabit/>, { store, userActions, history })
+        putUserHabitStub = sandbox.stub(userActions, 'putUserHabit')
+        page = mountWithTestWrapper(<PutHabit habitId={testHabitId}/>, { store, userActions, history })
     })
 
     afterEach(() => {
         sandbox.restore()
     })
 
+    describe('on display', () => {
+        it('should display input with default value', () => {
+            expect(
+                page.find('input[name="name"]').props().value
+            ).toBe('habit-name-1')
+        })
+    })
+
     describe('on click confirm button', () => {
         beforeEach(() => {
-            postUserHabitStub.resolves()
+            putUserHabitStub.resolves()
 
             page.find('input[name="name"]')
                 .simulate('change', { target: { value: 'new-habit-name' } })
@@ -39,8 +62,9 @@ describe('<PostHabit/>', () => {
             )).simulate('click')
         })
 
-        it('should call postUserHabit action', () => {
-            expect(postUserHabitStub.calledOnceWithExactly('new-habit-name')).toBeTruthy()
+        it('should call putUserHabit action', () => {
+            expect(putUserHabitStub.calledOnce).toBeTruthy()
+            expect(putUserHabitStub.firstCall.args[0].name).toBe('new-habit-name')
         })
 
         it('should display home page', () => {

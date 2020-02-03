@@ -37,6 +37,7 @@ const PutHabit: React.FC<PutHabitProps> = props => {
                             <input
                                 className="text-field__input"
                                 type="text"
+                                name="name"
                                 value={updatedHabit?.name}
                                 onChange={e => setUpdatedHabit(updatedHabit?.setName(e.target.value))}/>
                         </div>
