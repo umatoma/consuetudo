@@ -1,8 +1,8 @@
 import React, { ReactElement, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import { useHomeRoute } from '../hooks/AppRouteHooks'
-import { useFirebaseActions } from '../hooks/StateHooks'
+import { useHomeRoute } from '../hook/AppRouteHooks'
+import { useFirebaseActions } from '../hook/StateHooks'
 
 interface TopAppBarProps {
     iconButtonList?: ReactElement[]

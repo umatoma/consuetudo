@@ -1,26 +1,21 @@
 import React from 'react'
 import sinon from 'sinon'
+import { ReactWrapper } from 'enzyme'
+import { createMemoryHistory, History } from 'history'
 import { createTestStore, mountWithTestWrapper } from '../../../testing/TestUtil'
 import Home from './Home'
 import TopAppBar from '../../element/TopAppBar'
 import { Habit } from '../../../domain/user/Habit'
 import { HabitRecord } from '../../../domain/user/HabitRecord'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
-import { ReactWrapper } from 'enzyme'
-import { ViewHabitRoute } from '../../AppRoute'
+import { ViewHabitRoute } from '../../routing/AppRoute'
 import { UserActions } from '../../../store/user/UserActions'
 
-const historyPushMock = jest.fn()
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useHistory: () => ({
-        push: historyPushMock
-    })
-}))
 
 describe('<Home/>', () => {
 
     let page: ReactWrapper
+    let history: History
 
     const sandbox = sinon.createSandbox()
     const store = createTestStore({
@@ -53,7 +48,8 @@ describe('<Home/>', () => {
 
     beforeEach(() => {
         sandbox.useFakeTimers(new Date('2999-01-23T00:00+0900'))
-        page = mountWithTestWrapper(<Home/>, { store, userActions })
+        history = createMemoryHistory()
+        page = mountWithTestWrapper(<Home/>, { store, userActions, history })
     })
 
     afterEach(() => {
@@ -125,7 +121,7 @@ describe('<Home/>', () => {
         it('display viewHabit page', () => {
             const viewHabitRoute = new ViewHabitRoute()
             const path = viewHabitRoute.createPath({ habitId: 'habit-id-1' })
-            expect(historyPushMock).toHaveBeenCalledWith(path)
+            expect(history.location.pathname).toBe(path)
         })
     })
 

@@ -1,8 +1,8 @@
 import React from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import { FirebaseAuthState } from '../store/firebase/FirebaseState'
-import { useAuthStateEffect, useFirebaseSelector } from './hooks/StateHooks'
-import { useAppRoutes } from './hooks/AppRouteHooks'
+import { useAuthStateEffect, useFirebaseSelector } from './hook/StateHooks'
+import { useAppRoutes } from './hook/AppRouteHooks'
 
 
 const App: React.FC = props => {

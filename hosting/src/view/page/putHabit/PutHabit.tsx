@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TopAppBar from '../../element/TopAppBar'
-import { useUserActions, useUserHabit } from '../../hooks/StateHooks'
-import { useHomeRoute } from '../../hooks/AppRouteHooks'
+import { useUserActions, useUserHabit } from '../../hook/StateHooks'
+import { useHomeRoute } from '../../hook/AppRouteHooks'
 
 interface PutHabitProps {
     habitId: string

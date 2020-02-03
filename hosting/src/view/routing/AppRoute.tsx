@@ -1,13 +1,13 @@
-import { RouteComponentProps, RouteProps } from 'react-router-dom'
-import Home from './pages/home/Home'
-import SignIn from './pages/signIn/SignIn'
-import PostHabit from './pages/postHabit/PostHabit'
-import ViewHabit from './pages/viewHabit/ViewHabit'
 import React from 'react'
-import PutHabit from './pages/putHabit/PutHabit'
+import { RouteComponentProps, RouteProps } from 'react-router-dom'
+import Home from '../page/home/Home'
+import SignIn from '../page/signIn/SignIn'
+import PostHabit from '../page/postHabit/PostHabit'
+import ViewHabit from '../page/viewHabit/ViewHabit'
+import PutHabit from '../page/putHabit/PutHabit'
 
 
-interface AppRoute<Params = void> extends RouteProps {
+export interface AppRoute<Params = void> extends RouteProps {
     path: string
     render: (props: RouteComponentProps<Params>) => React.ReactNode
     createPath(params: Params): string

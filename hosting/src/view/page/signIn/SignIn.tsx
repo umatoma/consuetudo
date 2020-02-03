@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useFirebaseActions } from '../../hooks/StateHooks'
+import { useFirebaseActions } from '../../hook/StateHooks'
 
 const SignIn: React.FC = props => {
     const firebaseActions = useFirebaseActions()

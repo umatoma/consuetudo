@@ -1,5 +1,5 @@
 import React from 'react'
-import { AppRoutes } from './AppRoute'
+import { AppRoutes } from './routing/AppRoute'
 import { UserActions } from '../store/user/UserActions'
 import { FirebaseActions } from '../store/firebase/FirebaseActions'
 

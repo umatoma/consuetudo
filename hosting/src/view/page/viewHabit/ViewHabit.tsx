@@ -2,8 +2,8 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import Calendar from 'react-calendar'
 import TopAppBar from '../../element/TopAppBar'
-import { useUserActions, useUserHabit } from '../../hooks/StateHooks'
-import { useHomeRoute, usePutHabitRoute } from '../../hooks/AppRouteHooks'
+import { useUserActions, useUserHabit } from '../../hook/StateHooks'
+import { useHomeRoute, usePutHabitRoute } from '../../hook/AppRouteHooks'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 
 interface ViewHabitProps {

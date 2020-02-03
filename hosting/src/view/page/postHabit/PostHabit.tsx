@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TopAppBar from '../../element/TopAppBar'
-import { useUserActions } from '../../hooks/StateHooks'
-import { useHomeRoute } from '../../hooks/AppRouteHooks'
+import { useUserActions } from '../../hook/StateHooks'
+import { useHomeRoute } from '../../hook/AppRouteHooks'
 
 
 const PostHabit: React.FC = props => {
@@ -27,6 +27,7 @@ const PostHabit: React.FC = props => {
                             <input
                                 className="text-field__input"
                                 type="text"
+                                name="name"
                                 value={habitName}
                                 onChange={e => setHabitName(e.target.value)}/>
                         </div>

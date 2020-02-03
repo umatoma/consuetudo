@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { AppContext } from '../AppContext'
-import { AppRoutes, HomeRoute, PostHabitRoute, PutHabitRoute, SignInRoute, ViewHabitRoute } from '../AppRoute'
+import { AppRoutes, HomeRoute, PostHabitRoute, PutHabitRoute, SignInRoute, ViewHabitRoute } from '../routing/AppRoute'
 
 export function useAppRoutes(): AppRoutes {
     return useContext(AppContext).appRoutes
