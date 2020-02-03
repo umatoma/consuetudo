@@ -1,38 +1,46 @@
-name: Consuetodo CI/CD
+name: Main CI/CD
 
 on:
   push:
     branches:
       - master
-      - hoge
 
 jobs:
   unitTestHosting:
     runs-on: [macos-latest]
+    env:
+      TZ: Asia/Tokyo
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
       - run: npm install
+        working-directory: ./hosting
       - run: npm test
-    working-directory: ./hosting
+        working-directory: ./hosting
 
   unitTestFirestore:
     runs-on: [macos-latest]
+    env:
+      TZ: Asia/Tokyo
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
       - run: npm install
+        working-directory: ./firestore
       - run: npm run emulator &
+        working-directory: ./firestore
       - run: npm test
-    working-directory: ./firestore
+        working-directory: ./firestore
 
   uiTest:
     needs: [unitTestHosting, unitTestFirestore]
     runs-on: [macos-latest]
+    env:
+      TZ: Asia/Tokyo
     steps:
       - uses: actions/checkout@v1
       - run: echo 'TBD'
