@@ -45,7 +45,7 @@ jobs:
       - run: echo 'TBD'
 
   deploy:
-#    needs: [uiTest]
+    needs: [uiTest]
     runs-on: [macos-latest]
     env:
       FIREBASERC: ${{ secrets.FIREBASERC }}
