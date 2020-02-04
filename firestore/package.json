@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "emulator": "firebase emulators:start --only firestore",
-    "test": "jest"
+    "test": "firebase emulators:exec --only firestore 'npx jest'"
   },
   "author": "",
   "license": "ISC",

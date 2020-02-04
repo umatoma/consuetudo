@@ -1,4 +1,4 @@
-import * as firebase from 'firebase'
+import firebase from 'firebase/app'
 import UserRepository from '../../store/user/UserRepository'
 import { FirebaseHabit } from './FirebaseDataObjects'
 import { Habit } from '../../domain/user/Habit'

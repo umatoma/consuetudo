@@ -1,4 +1,4 @@
-import * as firebase from 'firebase'
+import firebase from 'firebase/app'
 import { Habit } from '../../domain/user/Habit'
 import { HabitRecord } from '../../domain/user/HabitRecord'
 import { HabitRecordDate } from '../../domain/user/HabitRecordDate'

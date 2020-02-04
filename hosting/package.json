@@ -6,7 +6,7 @@
         "predev": "rm -rf ./public/*",
         "dev": "parcel serve ./src/index.html --out-dir ./public --open",
         "prebuild": "rm -rf ./public/*",
-        "build": "parcel build ./src/index.html --out-dir ./public ",
+        "build": "NODE_ENV=production parcel build ./src/index.html --out-dir ./public ",
         "test": "jest"
     },
     "dependencies": {
