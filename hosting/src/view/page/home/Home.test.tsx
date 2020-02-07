@@ -10,6 +10,7 @@ import { HabitRecord } from '../../../domain/user/HabitRecord'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 import { ViewHabitRoute } from '../../routing/AppRoute'
 import { UserActions } from '../../../store/user/UserActions'
+import User from '../../../domain/user/User'
 
 
 describe('<Home/>', () => {
@@ -17,31 +18,35 @@ describe('<Home/>', () => {
     let page: ReactWrapper
     let history: History
 
+    const testUser = new User({ id: 'user-id' })
+    const testHabitList = [
+        new Habit({
+            id: 'habit-id-1',
+            name: 'habit-name-1',
+            recordList: [
+                new HabitRecord({
+                    habitId: 'habit-id-1',
+                    recordDate: new HabitRecordDate({ year: 2999, month: 1, date: 23, })
+                })
+            ]
+        }),
+        new Habit({
+            id: 'habit-id-2',
+            name: 'habit-name-2',
+            recordList: [
+                new HabitRecord({
+                    habitId: 'habit-id-2',
+                    recordDate: new HabitRecordDate({ year: 2999, month: 12, date: 11, })
+                })
+            ]
+        }),
+    ]
+
     const sandbox = sinon.createSandbox()
     const store = createTestStore({
         user: {
-            habitList: [
-                new Habit({
-                    id: 'habit-id-1',
-                    name: 'habit-name-1',
-                    recordList: [
-                        new HabitRecord({
-                            habitId: 'habit-id-1',
-                            recordDate: new HabitRecordDate({ year: 2999, month: 1, date: 23, })
-                        })
-                    ]
-                }),
-                new Habit({
-                    id: 'habit-id-2',
-                    name: 'habit-name-2',
-                    recordList: [
-                        new HabitRecord({
-                            habitId: 'habit-id-2',
-                            recordDate: new HabitRecordDate({ year: 2999, month: 12, date: 11, })
-                        })
-                    ]
-                }),
-            ]
+            user: testUser,
+            habitList: testHabitList
         }
     })
     const userActions = new UserActions(store.dispatch, null as any)

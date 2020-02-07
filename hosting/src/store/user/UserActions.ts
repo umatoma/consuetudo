@@ -4,26 +4,43 @@ import { HabitRecord } from '../../domain/user/HabitRecord'
 import { ThunkDispatch } from 'redux-thunk'
 import { Action } from 'redux'
 import StoreState from '../StoreState'
+import UserState from './UserState'
+import User from '../../domain/user/User'
+
+export interface UserAction extends Action<UserActionType> {
+    payload: UserState
+}
 
 export enum UserActionType {
-    SetHabitList = 'UserActions/SetHabitList'
+    ReplaceState = 'UserActionType/ReplaceState'
 }
 
 export class UserActions {
     constructor(
-        private dispatch: ThunkDispatch<StoreState, any, Action>,
+        private dispatch: ThunkDispatch<StoreState, any, UserAction>,
         private userRepository: UserRepository
     ) {
+    }
+
+    setUser(user: User): void {
+        return this.dispatch((dispatch, getState) => {
+            const state = getState()
+            const userState = { ...state.user, user: user }
+
+            dispatch({ type: UserActionType.ReplaceState, payload: userState })
+        })
     }
 
     loadUserState(): Promise<void> {
         return this.dispatch(async (dispatch, getState) => {
             const state = getState()
 
-            const userId = state.firebase.user!!.uid
+            const userId = state.user.user!!.id
             const habitList = await this.userRepository.getUserHabitList(userId)
 
-            dispatch({ type: UserActionType.SetHabitList, payload: habitList })
+            const userState = { ...state.user, habitList: habitList }
+
+            dispatch({ type: UserActionType.ReplaceState, payload: userState })
         })
     }
 
@@ -31,7 +48,7 @@ export class UserActions {
         return this.dispatch(async (dispatch, getState) => {
             const state = getState()
 
-            const userId = state.firebase.user!!.uid
+            const userId = state.user.user!!.id
             const habit = Habit.newInstance(name)
             await this.userRepository.postUserHabit(userId, habit)
 
@@ -43,7 +60,7 @@ export class UserActions {
         return this.dispatch(async (dispatch, getState) => {
             const state = getState()
 
-            const userId = state.firebase.user!!.uid
+            const userId = state.user.user!!.id
             await this.userRepository.putUserHabit(userId, habit)
 
             await this.loadUserState()
@@ -54,7 +71,7 @@ export class UserActions {
         return this.dispatch(async (dispatch, getState) => {
             const state = getState()
 
-            const userId = state.firebase.user!!.uid
+            const userId = state.user.user!!.id
             await this.userRepository.deleteUserHabit(userId, habit)
 
             await this.loadUserState()
@@ -71,11 +88,8 @@ export class UserActions {
                 throw new Error('Failed to pushUserHabitRecord()')
             }
 
-            const userId = state.firebase.user!!.uid
             const newHabit = habit?.pushRecord(habitRecord)
-            await this.userRepository.putUserHabit(userId, newHabit)
-
-            await this.loadUserState()
+            await this.putUserHabit(newHabit)
         })
     }
 
@@ -86,16 +100,11 @@ export class UserActions {
             const habitList = state.user.habitList
             const habit = habitList.find(habit => habit.id === habitRecord.habitId)
             if (!habit) {
-                throw new Error('Failed to pushUserHabitRecord()')
+                throw new Error('Failed to removeUserHabitRecord()')
             }
 
-            const userId = state.firebase.user!!.uid
             const newHabit = habit?.removeRecord(habitRecord)
-            await this.userRepository.putUserHabit(userId, newHabit)
-
-            await this.loadUserState()
+            await this.putUserHabit(newHabit)
         })
     }
-
 }
-

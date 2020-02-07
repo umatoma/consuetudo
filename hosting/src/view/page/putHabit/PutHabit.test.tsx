@@ -7,13 +7,16 @@ import { UserActions } from '../../../store/user/UserActions'
 import { createMemoryHistory } from 'history'
 import { HomeRoute } from '../../routing/AppRoute'
 import { Habit } from '../../../domain/user/Habit'
+import User from '../../../domain/user/User'
 
 describe('<PutHabit/>', () => {
 
     let page: ReactWrapper
     let putUserHabitStub: sinon.SinonStub<[Habit], Promise<void>>
 
-    const habitList = [
+    const testUser = new User({ id: 'user-id' })
+    const testHabitId = 'habit-id-1'
+    const testHabitList = [
         new Habit({
             id: 'habit-id-1',
             name: 'habit-name-1',
@@ -24,13 +27,12 @@ describe('<PutHabit/>', () => {
     const sandbox = sinon.createSandbox()
     const store = createTestStore({
         user: {
-            habitList: habitList
+            user: testUser,
+            habitList: testHabitList
         }
     })
     const userActions = new UserActions(store.dispatch, null as any)
     const history = createMemoryHistory()
-
-    const testHabitId = 'habit-id-1'
 
     beforeEach(() => {
         putUserHabitStub = sandbox.stub(userActions, 'putUserHabit')

@@ -1,18 +1,17 @@
-import { AnyAction, Reducer } from 'redux'
+import { Reducer } from 'redux'
 import UserState from './UserState'
-import { UserActionType } from './UserActions'
-import { Habit } from '../../domain/user/Habit'
+import { UserAction, UserActionType } from './UserActions'
 
 const initialState: UserState = {
+    user: null,
     habitList: []
 }
 
-const userReducer: Reducer = (state: UserState = initialState, action: AnyAction) => {
-    switch (action.type) {
-        case UserActionType.SetHabitList:
-            return { ...state, habitList: action.payload as Habit[] }
-        default:
-            return state
+const userReducer: Reducer<UserState, UserAction> = (state = initialState, action) => {
+    if (action.type === UserActionType.ReplaceState) {
+        return action.payload
+    } else {
+        return state
     }
 }
 

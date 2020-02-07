@@ -1,6 +1,8 @@
+import User from '../../domain/user/User'
 import { Habit } from '../../domain/user/Habit'
 
-type UserState = {
+interface UserState {
+    user: User | null,
     habitList: Habit[]
 }
 

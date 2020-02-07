@@ -9,13 +9,15 @@ import { HomeRoute, PutHabitRoute } from '../../routing/AppRoute'
 import { Habit } from '../../../domain/user/Habit'
 import { HabitRecord } from '../../../domain/user/HabitRecord'
 import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
+import User from '../../../domain/user/User'
 
 describe('<ViewHabit/>', () => {
 
     let page: ReactWrapper
     let deleteUserHabitStub: sinon.SinonStub<[Habit], Promise<void>>
 
-    const habitList = [
+    const testUser = new User({ id: 'user-id' })
+    const testHabitList = [
         new Habit({
             id: 'habit-id-1',
             name: 'habit-name-1',
@@ -34,7 +36,8 @@ describe('<ViewHabit/>', () => {
     const sandbox = sinon.createSandbox()
     const store = createTestStore({
         user: {
-            habitList: habitList
+            user: testUser,
+            habitList: testHabitList
         }
     })
     const userActions = new UserActions(store.dispatch, null as any)
@@ -54,7 +57,7 @@ describe('<ViewHabit/>', () => {
 
     describe('on display', () => {
         it('should display habit name', () => {
-            expect(page).toIncludeText(habitList[0].name)
+            expect(page).toIncludeText(testHabitList[0].name)
         })
 
         it('should highlight recorded date', () => {
@@ -101,7 +104,7 @@ describe('<ViewHabit/>', () => {
         })
 
         it('should call deleteUserHabit action', () => {
-            expect(deleteUserHabitStub.calledOnceWithExactly(habitList[0])).toBeTruthy()
+            expect(deleteUserHabitStub.calledOnceWithExactly(testHabitList[0])).toBeTruthy()
         })
 
         it('should display home page', () => {
