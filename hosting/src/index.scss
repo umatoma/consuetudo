@@ -9,6 +9,7 @@
 @import "~@material/checkbox/mdc-checkbox";
 @import "~@material/textfield/mdc-text-field";
 @import "~@material/layout-grid/mdc-layout-grid";
+@import "~@material/linear-progress/mdc-linear-progress";
 
 
 // ----- //
@@ -348,9 +349,55 @@ $color-primary-light: #2cceff;
     }
 }
 
+.linear-progress {
+    @extend .mdc-linear-progress;
+
+    @include mdc-linear-progress-bar-color($color: $color-primary-light);
+
+    &--indeterminate {
+        @extend .mdc-linear-progress--indeterminate;
+    }
+
+    &--fixed {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    &__buffering-dots {
+        @extend .mdc-linear-progress__buffering-dots;
+    }
+
+    &__buffer {
+        @extend .mdc-linear-progress__buffer;
+    }
+
+    &__bar {
+        @extend .mdc-linear-progress__bar;
+    }
+
+    &__primary-bar {
+        @extend .mdc-linear-progress__primary-bar;
+    }
+
+    &__secondary-bar {
+        @extend .mdc-linear-progress__secondary-bar;
+    }
+
+    &__bar-inner {
+        @extend .mdc-linear-progress__bar-inner;
+    }
+}
+
 .app {
     &__container {
         min-height: 100vh;
+    }
+
+    &__loading {
+        height: 100vh;
+        line-height: 100vh;
+        text-align: center;
     }
 
     &__footer {

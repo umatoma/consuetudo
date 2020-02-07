@@ -1,62 +1,83 @@
 import React, { useEffect } from 'react'
-import { Route, Switch, useHistory } from 'react-router-dom'
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
 import { FirebaseAuthState } from '../store/firebase/FirebaseState'
-import { useFirebaseSelector, useUserActions } from './hook/StateHooks'
-import { useAppRoutes, useHomeRoute, useSignInRoute } from './hook/AppRouteHooks'
+import { useFirebaseSelector, useUserActions, useUserSelector } from './hook/StateHooks'
+import { useAppRoutes } from './hook/AppRouteHooks'
 import User from '../domain/user/User'
+import AppFooter from './element/AppFooter'
+import AppLoading from './element/AppLoading'
 
+
+const AppContainer: React.FC = props => {
+    return (
+        <div className="app">
+            <div className="app__container">
+                {props.children}
+            </div>
+            <AppFooter/>
+        </div>
+    )
+}
 
 const App: React.FC = props => {
     const history = useHistory()
-    const homeRoute = useHomeRoute()
-    const signInRoute = useSignInRoute()
     const userActions = useUserActions()
-
     const appRoutes = useAppRoutes()
-    const authState = useFirebaseSelector<FirebaseAuthState>(state => state.authState)
+
+    const authState = useFirebaseSelector(state => state.authState)
     const authUser = useFirebaseSelector(state => state.user)
+    const appUser = useUserSelector(state => state.user)
 
     useEffect(() => {
-        switch (authState) {
-            case FirebaseAuthState.Error:
-            case FirebaseAuthState.SignedOut:
-                history.push(signInRoute.createPath())
-                break;
-            case FirebaseAuthState.SignedIn:
-                const user = new User({ id: authUser!!.uid })
-                userActions.setUser(user)
-                userActions.loadUserState()
-                    .then(() => history.push(homeRoute.createPath()))
-                break;
-            case FirebaseAuthState.Loading:
-                break;
+        if (authState === FirebaseAuthState.SignedIn) {
+            userActions.setUser(new User({ id: authUser!!.uid }))
+            history.push(appRoutes.home.createPath())
+            userActions.loadUserState()
+                .catch((e) => window.alert(e.message))
         }
     }, [authState])
 
-    if (authState == FirebaseAuthState.Loading) {
+    if (authState === FirebaseAuthState.Loading) {
         return (
-            <div>Loading</div>
+            <AppContainer>
+                <AppLoading/>
+            </AppContainer>
+        )
+    }
+
+    if (authState !== FirebaseAuthState.SignedIn) {
+        return (
+            <AppContainer>
+                <Switch>
+                    <Route {...appRoutes.signIn} />
+                    <Route path="*">
+                        <Redirect to={appRoutes.signIn.createPath()}/>
+                    </Route>
+                </Switch>
+            </AppContainer>
+        )
+    }
+
+    if (authState === FirebaseAuthState.SignedIn && !appUser) {
+        return (
+            <AppContainer>
+                <AppLoading/>
+            </AppContainer>
         )
     }
 
     return (
-        <div className="app">
-            <div className="app__container">
-                <Switch>
-                    <Route {...appRoutes.signIn} />
-                    <Route {...appRoutes.home} />
-                    <Route {...appRoutes.postHabit} />
-                    <Route {...appRoutes.viewHabit} />
-                    <Route {...appRoutes.putHabit} />
-                    <Route path="*">
-                        <div>Not Found</div>
-                    </Route>
-                </Switch>
-            </div>
-            <div className="app__footer">
-                <div className="app__footer-title">Consuetudo</div>
-            </div>
-        </div>
+        <AppContainer>
+            <Switch>
+                <Route {...appRoutes.home} />
+                <Route {...appRoutes.postHabit} />
+                <Route {...appRoutes.viewHabit} />
+                <Route {...appRoutes.putHabit} />
+                <Route path="*">
+                    <div>Not Found</div>
+                </Route>
+            </Switch>
+        </AppContainer>
     )
 }
 
