@@ -82,6 +82,10 @@ $color-primary-light: #2cceff;
 
         @include mdc-button-ink-color($color: $color-primary-light);
         @include mdc-button-outline-color($color: $color-primary-light);
+
+        &:active {
+            background-color: #dddddd;
+        }
     }
 
     &--sign-in-google {
