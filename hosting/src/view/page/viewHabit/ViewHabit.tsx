@@ -1,10 +1,9 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import Calendar from 'react-calendar'
+import ViewHabitCalendar from './ViewHabitCalendar'
 import TopAppBar from '../../element/TopAppBar'
 import { useUserActions, useUserHabit } from '../../hook/StateHooks'
 import { useHomeRoute, usePutHabitRoute } from '../../hook/AppRouteHooks'
-import { HabitRecordDate } from '../../../domain/user/HabitRecordDate'
 
 interface ViewHabitProps {
     habitId: string
@@ -15,9 +14,7 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
     const history = useHistory()
     const homeRoute = useHomeRoute()
     const putHabitRoute = usePutHabitRoute()
-
-    const habitId = props.habitId
-    const habit = useUserHabit(habitId)
+    const habit = useUserHabit(props.habitId)
 
     if (!habit) {
         return (
@@ -35,26 +32,19 @@ const ViewHabit: React.FC<ViewHabitProps> = props => {
                 </div>
                 <div className="top-nav__row top-nav__row--half-colored">
                     <div className="top-nav__section top-nav__section--full">
-                        <div className="top-nav__panel">{habit?.name}</div>
+                        <div className="top-nav__panel">{habit.name}</div>
                     </div>
                 </div>
             </div>
             <div className="layout-grid">
                 <div className="layout-grid__inner">
                     <div className="layout-grid__cell">
-                        <Calendar
-                            maxDetail="month"
-                            minDetail="month"
-                            tileClassName={({ date, view }) => {
-                                const recordDate = HabitRecordDate.fromDate(date)
-                                return habit?.isRecordedOn(recordDate) ? 'react-calendar__tile--is-recorded' : ''
-                            }}
-                        />
+                        <ViewHabitCalendar habit={habit}/>
                     </div>
                     <div className="layout-grid__cell">
                         <button
                             className="button button--put-habit"
-                            onClick={() => history.push(putHabitRoute.createPath({ habitId: habit?.id }))}
+                            onClick={() => history.push(putHabitRoute.createPath({ habitId: habit.id }))}
                         >
                             習慣を編集
                         </button>
