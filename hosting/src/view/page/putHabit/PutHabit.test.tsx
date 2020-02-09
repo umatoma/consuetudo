@@ -5,7 +5,7 @@ import PutHabit from './PutHabit'
 import { createTestStore, mountWithTestWrapper } from '../../../testing/TestUtil'
 import { UserActions } from '../../../store/user/UserActions'
 import { createMemoryHistory } from 'history'
-import { HomeRoute } from '../../routing/AppRoute'
+import { ViewHabitRoute } from '../../routing/AppRoute'
 import { Habit } from '../../../domain/user/Habit'
 import User from '../../../domain/user/User'
 
@@ -69,8 +69,9 @@ describe('<PutHabit/>', () => {
             expect(putUserHabitStub.firstCall.args[0].name).toBe('new-habit-name')
         })
 
-        it('should display home page', () => {
-            expect(history.location.pathname).toBe(new HomeRoute().createPath())
+        it('should display viewHabit page', () => {
+            const path = new ViewHabitRoute().createPath({ habitId: testHabitId })
+            expect(history.location.pathname).toBe(path)
         })
     })
 
@@ -82,8 +83,9 @@ describe('<PutHabit/>', () => {
             )).simulate('click')
         })
 
-        it('should display home page', () => {
-            expect(history.location.pathname).toBe(new HomeRoute().createPath())
+        it('should display viewHabit page', () => {
+            const path = new ViewHabitRoute().createPath({ habitId: testHabitId })
+            expect(history.location.pathname).toBe(path)
         })
     })
 })

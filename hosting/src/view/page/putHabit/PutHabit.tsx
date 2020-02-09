@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TopAppBar from '../../element/TopAppBar'
 import { useUserActions, useUserHabit } from '../../hook/StateHooks'
-import { useHomeRoute } from '../../hook/AppRouteHooks'
+import { useViewHabitRoute } from '../../hook/AppRouteHooks'
 
 interface PutHabitProps {
     habitId: string
@@ -11,7 +11,7 @@ interface PutHabitProps {
 const PutHabit: React.FC<PutHabitProps> = props => {
     const userActions = useUserActions()
     const history = useHistory()
-    const homeRoute = useHomeRoute()
+    const viewHabitRoute = useViewHabitRoute()
     const habit = useUserHabit(props.habitId)
     const [updatedHabit, setUpdatedHabit] = useState(habit)
 
@@ -47,7 +47,7 @@ const PutHabit: React.FC<PutHabitProps> = props => {
                             <div className="layout-grid__cell layout-grid__cell--span-2">
                                 <button
                                     className="button button--cancel"
-                                    onClick={() => history.push(homeRoute.createPath())}
+                                    onClick={() => history.push(viewHabitRoute.createPath({ habitId: habit.id }))}
                                 >
                                     キャンセル
                                 </button>
@@ -57,7 +57,7 @@ const PutHabit: React.FC<PutHabitProps> = props => {
                                     className="button button--confirm"
                                     onClick={() => {
                                         userActions.putUserHabit(updatedHabit!!)
-                                            .then(() => history.push(homeRoute.createPath()))
+                                            .then(() => history.push(viewHabitRoute.createPath({ habitId: habit.id })))
                                             .catch(e => window.alert(e.message))
                                     }}
                                 >
