@@ -1,14 +1,11 @@
 import 'package:consuetudo/model/AuthModel.dart';
 import 'package:consuetudo/page/home_page.dart';
+import 'package:consuetudo/page/post_habit_page.dart';
 import 'package:consuetudo/page/sign_in_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_driver/driver_extension.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  // Enable integration testing with the Flutter Driver extension.
-  // See https://flutter.dev/testing/ for more info.
-  enableFlutterDriverExtension();
   runApp(App());
 }
 
@@ -24,10 +21,9 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-//        routes: {
-//          '/signIn': (context) => SignInPage(),
-//          '/home': (context) => HomePage(),
-//        },
+        routes: {
+          '/postHabit': (context) => PostHabitPage(),
+        },
         home: _AppHome(),
       ),
     );

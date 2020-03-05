@@ -38,6 +38,7 @@ class AuthModel extends ChangeNotifier {
 
   void signIn() async {
     try {
+      await _googleSignIn.signOut();
       final googleSignInAccount = await _googleSignIn.signIn();
       final googleAuth = await googleSignInAccount.authentication;
       final credential = GoogleAuthProvider.getCredential(
