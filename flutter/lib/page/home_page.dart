@@ -1,4 +1,6 @@
 import 'package:consuetudo/model/AuthModel.dart';
+import 'package:consuetudo/page/post_habit_page.dart';
+import 'package:consuetudo/page/view_habit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +15,7 @@ class HomePage extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () { Navigator.pushNamed(context, '/postHabit'); },
+            onPressed: () { Navigator.pushNamed(context, PostHabitPage.routeName); },
           ),
           PopupMenuButton<VoidCallback>(
             onSelected: (VoidCallback callback) { callback(); },
@@ -52,6 +54,13 @@ class _HabitList extends StatelessWidget {
         return ListView(
           children: snapshot.data.documents.map((DocumentSnapshot document) {
             return ListTile(
+              onTap: () {
+                Navigator.pushNamed(
+                    context,
+                    ViewHabitPage.routeName,
+                    arguments: ViewHabitPageArguments(document),
+                );
+              },
               title: Text(document['id']),
               subtitle: Text(document['name']),
             );

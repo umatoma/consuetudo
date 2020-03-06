@@ -1,4 +1,6 @@
 import 'package:consuetudo/model/AuthModel.dart';
+import 'package:consuetudo/page/put_habit_page.dart';
+import 'package:consuetudo/page/view_habit_page.dart';
 import 'package:consuetudo/page/home_page.dart';
 import 'package:consuetudo/page/post_habit_page.dart';
 import 'package:consuetudo/page/sign_in_page.dart';
@@ -22,7 +24,9 @@ class App extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         routes: {
-          '/postHabit': (context) => PostHabitPage(),
+          PostHabitPage.routeName: (context) => PostHabitPage(),
+          ViewHabitPage.routeName: (context) => ViewHabitPage(),
+          PutHabitPage.routeName: (context) => PutHabitPage(),
         },
         home: _AppHome(),
       ),

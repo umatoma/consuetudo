@@ -1,29 +1,49 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:consuetudo/model/AuthModel.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
-class PostHabitPage extends StatelessWidget {
-  static const routeName = '/postHabit';
+class PutHabitPageArguments {
+  final DocumentSnapshot habit;
+
+  PutHabitPageArguments(this.habit);
+}
+
+class PutHabitPage extends StatelessWidget {
+  static const routeName = '/putHabit';
 
   @override
   Widget build(BuildContext context) {
+    final PutHabitPageArguments args =
+        ModalRoute
+            .of(context)
+            .settings
+            .arguments;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Consuetodo'),
+        title: Text('Consuedoto'),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 24.0),
-        child: Center(
-          child: _Form(),
-        ),
-      ),
+      body: StreamBuilder(
+          stream: args.habit.reference.snapshots(),
+          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text('Loading...');
+            }
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 24.0),
+              child: Center(
+                child: _Form(habit: snapshot.data),
+              ),
+            );
+          }),
     );
   }
 }
 
 class _Form extends StatefulWidget {
+  final DocumentSnapshot habit;
+
+  const _Form({Key key, this.habit}) : super(key: key);
+
   @override
   __FormState createState() => __FormState();
 }
@@ -33,9 +53,10 @@ class __FormState extends State<_Form> {
   final TextEditingController _controller = TextEditingController();
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+
+    _controller.text = widget.habit['name'];
   }
 
   @override
@@ -51,7 +72,9 @@ class __FormState extends State<_Form> {
               labelText: 'Name',
             ),
             controller: _controller,
-            validator: (value) { return value.isEmpty ? '入力して下さい' : null; },
+            validator: (value) {
+              return value.isEmpty ? '入力して下さい' : null;
+            },
           ),
           SizedBox(height: 16.0),
           Row(
@@ -59,7 +82,9 @@ class __FormState extends State<_Form> {
             children: <Widget>[
               Expanded(
                 child: RaisedButton(
-                  onPressed: () { Navigator.pop(context); },
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: Text('キャンセル'),
                 ),
               ),
@@ -80,19 +105,9 @@ class __FormState extends State<_Form> {
   void _onConfirm() async {
     if (_formKey.currentState.validate()) {
       try {
-        final authModel = Provider.of<AuthModel>(context, listen: false);
-        final String id = Uuid().v4();
         final String name = _controller.text;
-        final DocumentReference document = Firestore.instance
-            .collection('users')
-            .document(authModel.user.uid)
-            .collection('habits')
-            .document(id);
-        await document.setData({
-          'id': id,
-          'name': name,
-          'recordList': [],
-        });
+        final DocumentReference document = widget.habit.reference;
+        await document.updateData({'name': name});
         Navigator.pop(context);
       } catch (e, stackTrace) {
         print(e);
@@ -101,4 +116,3 @@ class __FormState extends State<_Form> {
     }
   }
 }
-
