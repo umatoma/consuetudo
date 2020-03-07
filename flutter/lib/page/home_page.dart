@@ -39,16 +39,7 @@ class HomePage extends StatelessWidget {
           )
         ],
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            _Head(targetDate: targetDate),
-            Expanded(
-              child: _HabitList(targetDate: targetDate),
-            ),
-          ],
-        ),
-      ),
+      body: _PageView(),
     );
   }
 }
@@ -117,6 +108,54 @@ class _Head extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _PageView extends StatefulWidget {
+  @override
+  _PageViewState createState() => _PageViewState();
+}
+
+class _PageViewState extends State<_PageView> {
+  static final int _itemCount = 999999;
+  static final int _initialPage = _itemCount ~/ 2;
+
+  PageController _pageController;
+  DateTime _referenceDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _initialPage);
+    _referenceDate = DateTime.now();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _pageController,
+      itemCount: _itemCount,
+      itemBuilder: (context, position) {
+        final diffDays = position - _initialPage;
+        final targetDate = _referenceDate.add(Duration(days: diffDays));
+        return Container(
+          child: Column(
+            children: <Widget>[
+              _Head(targetDate: targetDate),
+              Expanded(
+                child: _HabitList(targetDate: targetDate),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
