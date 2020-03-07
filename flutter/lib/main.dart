@@ -1,3 +1,4 @@
+import 'package:consuetudo/localizations.dart';
 import 'package:consuetudo/model/AuthModel.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
 import 'package:consuetudo/page/view_habit_page.dart';
@@ -6,6 +7,7 @@ import 'package:consuetudo/page/post_habit_page.dart';
 import 'package:consuetudo/page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(App());
@@ -20,6 +22,15 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Consuetodo',
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('ja'),
+        ],
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
