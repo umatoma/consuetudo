@@ -182,16 +182,19 @@ class _HabitList extends StatelessWidget {
         }
         return ListView(
           children: snapshot.data.documents.map((DocumentSnapshot document) {
+            final isRecorded = _isRecordedOn(targetDate, document);
             return Card(
               child: ListTile(
                 onTap: () {
-                  // TODO: Recordの更新処理
+                  if (isRecorded) {
+                    _removeHabitRecord(targetDate, document);
+                  } else {
+                    _pushHabitRecord(targetDate, document);
+                  }
                 },
                 leading: Icon(
                   Icons.check,
-                  color: _isRecordedOn(targetDate, document)
-                      ? Colors.blue
-                      : Colors.grey,
+                  color: isRecorded ? Colors.blue : Colors.grey,
                 ),
                 title: Text(document['name']),
                 trailing: IconButton(
@@ -211,6 +214,31 @@ class _HabitList extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _pushHabitRecord(DateTime date, DocumentSnapshot document) async {
+    // TODO: Transaction使う？
+    final List<dynamic> recordList = document['recordList'];
+    final newRecordList = List.from(recordList);
+    newRecordList.add({
+      'habitId': document['id'],
+      'recordDate': {'year': date.year, 'month': date.month, 'date': date.day},
+    });
+    await document.reference.updateData({'recordList': newRecordList});
+  }
+
+  void _removeHabitRecord(DateTime date, DocumentSnapshot document) async {
+    // TODO: Transaction使う？
+    final List<dynamic> recordList = document['recordList'];
+    final newRecordList = List.from(recordList);
+    newRecordList.removeWhere((record) {
+      final Map<String, dynamic> recordDate = record['recordDate'];
+      final bool isSameDate = (recordDate['year'] == date.year &&
+          recordDate['month'] == date.month &&
+          recordDate['date'] == date.day);
+      return isSameDate;
+    });
+    await document.reference.updateData({'recordList': newRecordList});
   }
 
   bool _isRecordedOn(DateTime date, DocumentSnapshot document) {
