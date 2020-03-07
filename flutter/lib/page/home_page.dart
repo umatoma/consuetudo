@@ -1,10 +1,11 @@
-import 'package:consuetudo/model/AuthModel.dart';
+import 'package:consuetudo/entity/user_habit.dart';
+import 'package:consuetudo/model/auth_model.dart';
+import 'package:consuetudo/model/user_habit_model.dart';
 import 'package:consuetudo/page/post_habit_page.dart';
 import 'package:consuetudo/page/view_habit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatelessWidget {
   final DateTime targetDate = DateTime.now();
@@ -167,43 +168,42 @@ class _HabitList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authModel = Provider.of<AuthModel>(context);
-    final habitListStream = Firestore.instance
-        .collection('users')
-        .document(authModel.user.uid)
-        .collection('habits')
-        .snapshots();
+    final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
 
     return StreamBuilder(
-      stream: habitListStream,
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      stream: userHabitModel.createUserHabitListStream(),
+      builder: (BuildContext context, AsyncSnapshot<List<UserHabit>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text('Loading...');
         }
+
         return ListView(
-          children: snapshot.data.documents.map((DocumentSnapshot document) {
-            final isRecorded = _isRecordedOn(targetDate, document);
+          children: snapshot.data.map((UserHabit userHabit) {
             return Card(
               child: ListTile(
                 onTap: () {
-                  if (isRecorded) {
-                    _removeHabitRecord(targetDate, document);
+                  if (userHabit.isRecordedOn(targetDate)) {
+                    userHabitModel
+                        .removeHabitRecord(userHabit.createRecord(targetDate));
                   } else {
-                    _pushHabitRecord(targetDate, document);
+                    userHabitModel
+                        .pushHabitRecord(userHabit.createRecord(targetDate));
                   }
                 },
                 leading: Icon(
                   Icons.check,
-                  color: isRecorded ? Colors.blue : Colors.grey,
+                  color: userHabit.isRecordedOn(targetDate)
+                      ? Colors.blue
+                      : Colors.grey,
                 ),
-                title: Text(document['name']),
+                title: Text(userHabit.name),
                 trailing: IconButton(
                   icon: Icon(Icons.more_vert),
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.pushNamed(
                       context,
                       ViewHabitPage.routeName,
-                      arguments: ViewHabitPageArguments(document),
+                      arguments: ViewHabitPageArguments(userHabit),
                     );
                   },
                 ),
@@ -214,41 +214,5 @@ class _HabitList extends StatelessWidget {
         );
       },
     );
-  }
-
-  void _pushHabitRecord(DateTime date, DocumentSnapshot document) async {
-    // TODO: Transaction使う？
-    final List<dynamic> recordList = document['recordList'];
-    final newRecordList = List.from(recordList);
-    newRecordList.add({
-      'habitId': document['id'],
-      'recordDate': {'year': date.year, 'month': date.month, 'date': date.day},
-    });
-    await document.reference.updateData({'recordList': newRecordList});
-  }
-
-  void _removeHabitRecord(DateTime date, DocumentSnapshot document) async {
-    // TODO: Transaction使う？
-    final List<dynamic> recordList = document['recordList'];
-    final newRecordList = List.from(recordList);
-    newRecordList.removeWhere((record) {
-      final Map<String, dynamic> recordDate = record['recordDate'];
-      final bool isSameDate = (recordDate['year'] == date.year &&
-          recordDate['month'] == date.month &&
-          recordDate['date'] == date.day);
-      return isSameDate;
-    });
-    await document.reference.updateData({'recordList': newRecordList});
-  }
-
-  bool _isRecordedOn(DateTime date, DocumentSnapshot document) {
-    final List<dynamic> recordList = document['recordList'];
-    return recordList.any((record) {
-      final Map<String, dynamic> recordDate = record['recordDate'];
-      final bool isSameDate = (recordDate['year'] == date.year &&
-          recordDate['month'] == date.month &&
-          recordDate['date'] == date.day);
-      return isSameDate;
-    });
   }
 }

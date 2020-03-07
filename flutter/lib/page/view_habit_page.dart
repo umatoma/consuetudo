@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:consuetudo/entity/user_habit.dart';
+import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ViewHabitPageArguments {
-  final DocumentSnapshot habit;
+  final UserHabit habit;
 
   ViewHabitPageArguments(this.habit);
 }
@@ -15,13 +18,20 @@ class ViewHabitPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ViewHabitPageArguments args =
         ModalRoute.of(context).settings.arguments;
+    final authModel = Provider.of<AuthModel>(context, listen: false);
+    final document = Firestore.instance
+        .collection('users')
+        .document(authModel.user.uid)
+        .collection('habits')
+        .document(args.habit.id)
+        .snapshots();
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Consuetodo'),
       ),
       body: StreamBuilder(
-          stream: args.habit.reference.snapshots(),
+          stream: document,
           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Text('Loading...');

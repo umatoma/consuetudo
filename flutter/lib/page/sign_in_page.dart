@@ -1,4 +1,4 @@
-import 'package:consuetudo/model/AuthModel.dart';
+import 'package:consuetudo/model/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
