@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - ghactions
 
 jobs:
   unitTestHosting:
@@ -35,8 +36,28 @@ jobs:
       - run: npm test
         working-directory: ./firestore
 
+  unitTestFlutter:
+    runs-on: [macos-latest]
+    env:
+      TZ: Asia/Tokyo
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.12.13+hotfix.8'
+      - run: flutter channel beta
+      - run: flutter config --enable-web
+      - run: flutter doctor
+      - run: flutter pub get
+        working-directory: ./flutter
+      - run: flutter test test/
+        working-directory: ./flutter
+
   uiTest:
-    needs: [unitTestHosting, unitTestFirestore]
+    needs: [unitTestHosting, unitTestFirestore, unitTestFlutter]
     runs-on: [macos-latest]
     env:
       TZ: Asia/Tokyo
@@ -44,7 +65,46 @@ jobs:
       - uses: actions/checkout@v1
       - run: echo 'TBD'
 
-  deploy:
+  buildAndroid:
+    # needs: [uiTest]
+    runs-on: [macos-latest]
+    env:
+      GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+      RELEASE_JKS: ${{ secrets.RELEASE_JKS }}
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.12.13+hotfix.8'
+      - run: flutter channel beta
+      - run: flutter config --enable-web
+      - run: flutter doctor
+      - run: flutter pub get
+        working-directory: ./flutter
+      - run: echo $GOOGLE_SERVICES_JSON > ./android/app/google-services.json
+        working-directory: ./flutter
+      - run: echo $RELEASE_JKS | base64 --decode --output ./android/release.jks
+        working-directory: ./flutter
+      - run: |
+          echo "storeFile=$(pwd)/android/release.jks" >> ./android/key.properties
+          echo "storePassword=$STORE_PASSWORD" >> ./android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> ./android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> ./android/key.properties
+        working-directory: ./flutter
+      - run: flutter build apk --release --verbose
+        working-directory: ./flutter
+      - uses: actions/upload-artifact@v1.0.0
+        with:
+          name: app-release.apk
+          path: ./flutter/build/app/outputs/apk/release/app-release.apk
+
+  deployWeb:
     needs: [uiTest]
     runs-on: [macos-latest]
     env:
