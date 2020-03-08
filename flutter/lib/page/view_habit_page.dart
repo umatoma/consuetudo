@@ -92,9 +92,7 @@ class ViewHabitPage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: RaisedButton(
-                      color: Colors.blue,
-                      textColor: Colors.white,
+                    child: OutlineButton(
                       child: Text('削除'),
                       onPressed: () {
                         _showConfirmDeleteDialog(

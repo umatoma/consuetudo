@@ -20,7 +20,7 @@ class PutHabitPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Consuedoto'),
+        title: Text('Consuetodo'),
       ),
       body: StreamBuilder(
           stream: userHabitModel.createUserHabitStream(args.habit),
@@ -28,11 +28,29 @@ class PutHabitPage extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Text('Loading...');
             }
-            return Container(
-              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 24.0),
-              child: Center(
-                child: _Form(habit: snapshot.data),
-              ),
+
+            return Column(
+              children: <Widget>[
+                Container(
+                  height: 64.0,
+                  color: Colors.blue,
+                  child: Center(
+                    child: Text(
+                      '習慣を編集',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _Form(habit: snapshot.data),
+                  ),
+                ),
+              ],
             );
           }),
     );
@@ -69,7 +87,7 @@ class __FormState extends State<_Form> {
           TextFormField(
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
-              labelText: 'Name',
+              labelText: '名前',
             ),
             controller: _controller,
             validator: (value) {
@@ -81,18 +99,20 @@ class __FormState extends State<_Form> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: RaisedButton(
+                child: OutlineButton(
+                  child: Text('キャンセル'),
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('キャンセル'),
                 ),
               ),
               SizedBox(width: 16.0),
               Expanded(
                 child: RaisedButton(
-                  onPressed: _onConfirm,
+                  color: Colors.blue,
+                  textColor: Colors.white,
                   child: Text('決定'),
+                  onPressed: _onConfirm,
                 ),
               ),
             ],
