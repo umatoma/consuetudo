@@ -1,8 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:consuetudo/entity/user_habit.dart';
+import 'package:consuetudo/model/user_habit_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PutHabitPageArguments {
-  final DocumentSnapshot habit;
+  final UserHabit habit;
 
   PutHabitPageArguments(this.habit);
 }
@@ -13,18 +15,16 @@ class PutHabitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final PutHabitPageArguments args =
-        ModalRoute
-            .of(context)
-            .settings
-            .arguments;
+        ModalRoute.of(context).settings.arguments;
+    final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Consuedoto'),
       ),
       body: StreamBuilder(
-          stream: args.habit.reference.snapshots(),
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          stream: userHabitModel.createUserHabitStream(args.habit),
+          builder: (context, AsyncSnapshot<UserHabit> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Text('Loading...');
             }
@@ -40,7 +40,7 @@ class PutHabitPage extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  final DocumentSnapshot habit;
+  final UserHabit habit;
 
   const _Form({Key key, this.habit}) : super(key: key);
 
@@ -56,7 +56,7 @@ class __FormState extends State<_Form> {
   void initState() {
     super.initState();
 
-    _controller.text = widget.habit['name'];
+    _controller.text = widget.habit.name;
   }
 
   @override
@@ -105,9 +105,10 @@ class __FormState extends State<_Form> {
   void _onConfirm() async {
     if (_formKey.currentState.validate()) {
       try {
-        final String name = _controller.text;
-        final DocumentReference document = widget.habit.reference;
-        await document.updateData({'name': name});
+        final userHabitModel =
+            Provider.of<UserHabitModel>(context, listen: false);
+        final newHabit = widget.habit.putName(_controller.text);
+        await userHabitModel.putHabit(newHabit);
         Navigator.pop(context);
       } catch (e, stackTrace) {
         print(e);

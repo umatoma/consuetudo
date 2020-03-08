@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:consuetudo/model/auth_model.dart';
+import 'package:consuetudo/entity/user_habit.dart';
+import 'package:consuetudo/model/user_habit_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class PostHabitPage extends StatelessWidget {
   static const routeName = '/postHabit';
@@ -51,7 +50,9 @@ class __FormState extends State<_Form> {
               labelText: 'Name',
             ),
             controller: _controller,
-            validator: (value) { return value.isEmpty ? '入力して下さい' : null; },
+            validator: (value) {
+              return value.isEmpty ? '入力して下さい' : null;
+            },
           ),
           SizedBox(height: 16.0),
           Row(
@@ -59,7 +60,9 @@ class __FormState extends State<_Form> {
             children: <Widget>[
               Expanded(
                 child: RaisedButton(
-                  onPressed: () { Navigator.pop(context); },
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: Text('キャンセル'),
                 ),
               ),
@@ -80,19 +83,11 @@ class __FormState extends State<_Form> {
   void _onConfirm() async {
     if (_formKey.currentState.validate()) {
       try {
-        final authModel = Provider.of<AuthModel>(context, listen: false);
-        final String id = Uuid().v4();
-        final String name = _controller.text;
-        final DocumentReference document = Firestore.instance
-            .collection('users')
-            .document(authModel.user.uid)
-            .collection('habits')
-            .document(id);
-        await document.setData({
-          'id': id,
-          'name': name,
-          'recordList': [],
-        });
+        final userHabitModel =
+            Provider.of<UserHabitModel>(context, listen: false);
+        final habit = UserHabit(name: _controller.text, recordList: []);
+        await userHabitModel.postHabit(habit);
+
         Navigator.pop(context);
       } catch (e, stackTrace) {
         print(e);
@@ -101,4 +96,3 @@ class __FormState extends State<_Form> {
     }
   }
 }
-

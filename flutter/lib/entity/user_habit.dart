@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class UserHabit {
   final String id;
@@ -6,10 +7,14 @@ class UserHabit {
   final List<UserHabitRecord> recordList;
 
   UserHabit({
-    @required this.id,
+    String id,
     @required this.name,
     @required this.recordList,
-  });
+  }) : this.id = id ?? Uuid().v4();
+
+  UserHabit putName(String name) {
+    return UserHabit(id: this.id, name: name, recordList: this.recordList);
+  }
 
   bool isRecordedOn(DateTime dateTime) {
     return this.recordList.any((record) {

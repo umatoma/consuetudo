@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:consuetudo/localizations.dart';
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/model/user_habit_model.dart';
@@ -20,7 +21,10 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthModel()),
-        Provider(create: (context) => UserHabitModel(context)),
+        Provider(create: (context) => UserHabitModel(
+          authModel: Provider.of<AuthModel>(context, listen: false),
+          firestore: Firestore.instance,
+        )),
       ],
       child: MaterialApp(
         title: 'Consuetodo',

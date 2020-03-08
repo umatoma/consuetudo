@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:consuetudo/entity/user_habit.dart';
-import 'package:consuetudo/model/auth_model.dart';
+import 'package:consuetudo/model/user_habit_model.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,43 +17,38 @@ class ViewHabitPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ViewHabitPageArguments args =
         ModalRoute.of(context).settings.arguments;
-    final authModel = Provider.of<AuthModel>(context, listen: false);
-    final document = Firestore.instance
-        .collection('users')
-        .document(authModel.user.uid)
-        .collection('habits')
-        .document(args.habit.id)
-        .snapshots();
+    final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Consuetodo'),
       ),
       body: StreamBuilder(
-          stream: document,
-          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          stream: userHabitModel.createUserHabitStream(args.habit),
+          builder: (context, AsyncSnapshot<UserHabit> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Text('Loading...');
             }
 
-            if (snapshot.data.exists == false) {
+            if (snapshot.data == null) {
               return Text('Not found...');
             }
 
+            final habit = snapshot.data;
             return Container(
               padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(snapshot.data['id']),
-                  Text(snapshot.data['name']),
+                  Text(habit.id),
+                  Text(habit.name),
                   RaisedButton(
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
                         PutHabitPage.routeName,
-                        arguments: PutHabitPageArguments(snapshot.data),
+                        arguments: PutHabitPageArguments(habit),
                       );
                     },
                     child: Text('習慣を編集'),
@@ -64,7 +58,7 @@ class ViewHabitPage extends StatelessWidget {
                       _showConfirmDeleteDialog(
                         context,
                         onConfirm: () async {
-                          await snapshot.data.reference.delete();
+                          await userHabitModel.deleteHabit(habit);
                           Navigator.pop(context);
                         },
                       );
