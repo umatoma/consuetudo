@@ -16,21 +16,22 @@ class UserHabit {
     return UserHabit(id: this.id, name: name, recordList: this.recordList);
   }
 
+  UserHabitRecord createRecord(DateTime dateTime) {
+    final localDateTime = dateTime.toLocal();
+    return UserHabitRecord(
+      habitId: id,
+      recordDate: UserHabitRecordDate(
+        year: localDateTime.year,
+        month: localDateTime.month,
+        date: localDateTime.day,
+      ),
+    );
+  }
+
   bool isRecordedOn(DateTime dateTime) {
     return this.recordList.any((record) {
       return record.recordDate.isRecordedOn(dateTime);
     });
-  }
-
-  UserHabitRecord createRecord(DateTime dateTime) {
-    return UserHabitRecord(
-      habitId: id,
-      recordDate: UserHabitRecordDate(
-        year: dateTime.year,
-        month: dateTime.month,
-        date: dateTime.day,
-      ),
-    );
   }
 }
 
@@ -56,8 +57,9 @@ class UserHabitRecordDate {
   });
 
   bool isRecordedOn(DateTime dateTime) {
-    return (dateTime.year == year &&
-        dateTime.month == month &&
-        dateTime.day == date);
+    final localDateTime = dateTime.toLocal();
+    return (localDateTime.year == year &&
+        localDateTime.month == month &&
+        localDateTime.day == date);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class SignInPage extends StatelessWidget {
   @override
@@ -9,7 +8,7 @@ class SignInPage extends StatelessWidget {
     var authModel = Provider.of<AuthModel>(context, listen: false);
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: EdgeInsets.symmetric(horizontal: 64.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -25,9 +24,14 @@ class SignInPage extends StatelessWidget {
                 style: TextStyle(fontSize: 24.0),
               ),
               SizedBox(height: 64),
-              SignInButton(
-                Buttons.Google,
-                onPressed: () => authModel.signIn(),
+              Container(
+                width: double.infinity,
+                child: RaisedButton.icon(
+                  icon: Image.asset('assets/images/btn_google_light_normal.png', width: 16),
+                  label: Text('Sign in with Google'),
+                  color: Colors.white,
+                  onPressed: () => authModel.signIn(),
+                ),
               ),
             ],
           ),
