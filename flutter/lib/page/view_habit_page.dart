@@ -2,7 +2,9 @@ import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/user_habit_model.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class ViewHabitPageArguments {
   final UserHabit habit;
@@ -36,34 +38,74 @@ class ViewHabitPage extends StatelessWidget {
 
             final habit = snapshot.data;
             return Container(
-              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(habit.id),
-                  Text(habit.name),
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        PutHabitPage.routeName,
-                        arguments: PutHabitPageArguments(habit),
-                      );
-                    },
-                    child: Text('習慣を編集'),
-                  ),
-                  RaisedButton(
-                    onPressed: () {
-                      _showConfirmDeleteDialog(
-                        context,
-                        onConfirm: () async {
-                          await userHabitModel.deleteHabit(habit);
-                          Navigator.pop(context);
+                  _Head(habit: habit),
+                  Card(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: CalendarCarousel(
+                        height: 360.0,
+                        locale: Intl.defaultLocale,
+                        daysHaveCircularBorder: true,
+                        todayButtonColor: Colors.transparent,
+                        todayBorderColor: Colors.blue,
+                        todayTextStyle: TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.blue,
+                        ),
+                        customDayBuilder: (bool isSelectable,
+                            int index,
+                            bool isSelectedDay,
+                            bool isToday,
+                            bool isPrevMonthDay,
+                            TextStyle textStyle,
+                            bool isNextMonthDay,
+                            bool isThisMonthDay,
+                            DateTime day) {
+                          if (habit.isRecordedOn(day)) {
+                            return Center(
+                              child: Icon(Icons.check, color: Colors.blue),
+                            );
+                          }
+                          return null;
                         },
-                      );
-                    },
-                    child: Text('習慣を削除'),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      child: Text('編集'),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          PutHabitPage.routeName,
+                          arguments: PutHabitPageArguments(habit),
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      child: Text('削除'),
+                      onPressed: () {
+                        _showConfirmDeleteDialog(
+                          context,
+                          onConfirm: () async {
+                            await userHabitModel.deleteHabit(habit);
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -97,5 +139,57 @@ class ViewHabitPage extends StatelessWidget {
             ],
           );
         });
+  }
+}
+
+class _Head extends StatelessWidget {
+  static const upperHeight = 64.0;
+  static const lowerHeight = 48.0;
+  final UserHabit habit;
+
+  const _Head({Key key, @required this.habit}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: upperHeight + lowerHeight,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            height: upperHeight + (lowerHeight / 2.0),
+            color: Colors.blue,
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: upperHeight,
+              child: Center(
+                child: Text(
+                  '習慣の記録',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Card(
+              child: Container(
+                width: 192,
+                height: lowerHeight - 8.0, // Padding調整
+                child: Center(
+                  child: Text(habit.name),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
