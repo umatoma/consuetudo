@@ -21,10 +21,11 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AuthModel()),
-        Provider(create: (context) => UserHabitModel(
-          authModel: Provider.of<AuthModel>(context, listen: false),
-          firestore: Firestore.instance,
-        )),
+        Provider(
+            create: (context) => UserHabitModel(
+                  authModel: Provider.of<AuthModel>(context, listen: false),
+                  firestore: Firestore.instance,
+                )),
       ],
       child: MaterialApp(
         title: 'Consuetodo',
@@ -37,8 +38,13 @@ class App extends StatelessWidget {
         supportedLocales: [
           const Locale('ja'),
         ],
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+        theme: ThemeData.light().copyWith(
+          primaryColor: Colors.lightBlueAccent[700],
+          primaryColorLight: Colors.lightBlueAccent[200],
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.lightBlueAccent[700],
+            textTheme: ButtonTextTheme.primary,
+          ),
         ),
         routes: {
           PostHabitPage.routeName: (context) => PostHabitPage(),

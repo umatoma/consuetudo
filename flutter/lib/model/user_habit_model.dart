@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class UserHabitModel {
   final AuthModel authModel;

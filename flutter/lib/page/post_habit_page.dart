@@ -1,5 +1,6 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/user_habit_model.dart';
+import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,14 +10,21 @@ class PostHabitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Consuetodo'),
-      ),
+      appBar: AppAppBar(context: context),
       body: Column(
         children: <Widget>[
           Container(
             height: 64.0,
-            color: Colors.blue,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColorLight,
+                ],
+              ),
+            ),
             child: Center(
               child: Text(
                 '習慣を追加',
@@ -86,8 +94,6 @@ class __FormState extends State<_Form> {
               SizedBox(width: 16.0),
               Expanded(
                 child: RaisedButton(
-                  color: Colors.blue,
-                  textColor: Colors.white,
                   child: Text('決定'),
                   onPressed: _onConfirm,
                 ),

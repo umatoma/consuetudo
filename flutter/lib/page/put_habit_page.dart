@@ -1,5 +1,6 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/user_habit_model.dart';
+import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,40 +20,50 @@ class PutHabitPage extends StatelessWidget {
     final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Consuetodo'),
-      ),
-      body: StreamBuilder(
-          stream: userHabitModel.createUserHabitStream(args.habit),
-          builder: (context, AsyncSnapshot<UserHabit> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
-            }
-
-            return Column(
-              children: <Widget>[
-                Container(
-                  height: 64.0,
-                  color: Colors.blue,
-                  child: Center(
-                    child: Text(
-                      '習慣を編集',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+      appBar: AppAppBar(context: context),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 64.0,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColorLight,
+                ],
+              ),
+            ),
+            child: Center(
+              child: Text(
+                '習慣を編集',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
                 ),
-                Expanded(
-                  child: Container(
+              ),
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<UserHabit>(
+                stream: userHabitModel.createUserHabitStream(args.habit),
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text('Loading...');
+                    } else {
+                      return Text('Not found...');
+                    }
+                  }
+                  return Container(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: _Form(habit: snapshot.data),
-                  ),
-                ),
-              ],
-            );
-          }),
+                  );
+                }),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -109,8 +120,6 @@ class __FormState extends State<_Form> {
               SizedBox(width: 16.0),
               Expanded(
                 child: RaisedButton(
-                  color: Colors.blue,
-                  textColor: Colors.white,
                   child: Text('決定'),
                   onPressed: _onConfirm,
                 ),
