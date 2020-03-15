@@ -11,19 +11,19 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
 
   @override
   bool isSupported(Locale locale) {
-    return ['ja'].contains(locale.languageCode);
+    return <String>['ja'].contains(locale.languageCode);
   }
 
   @override
   Future<AppLocalizations> load(Locale locale) async {
     assert(isSupported(locale));
-    final localeName = Intl.canonicalizedLocale(locale.toString());
+    final String localeName = Intl.canonicalizedLocale(locale.toString());
     Intl.defaultLocale = localeName;
     return AppLocalizations();
   }
 
   @override
-  bool shouldReload(LocalizationsDelegate old) {
+  bool shouldReload(_) {
     return false;
   }
 }

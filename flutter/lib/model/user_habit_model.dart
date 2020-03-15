@@ -2,17 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:consuetudo/entity/user_habit.dart';
-import 'package:consuetudo/model/auth_model.dart';
 import 'package:flutter/foundation.dart';
 
-class UserHabitModel {
-  final AuthModel authModel;
-  final Firestore firestore;
-
-  UserHabitModel({
-    @required this.authModel,
-    @required this.firestore,
-  });
+class UserHabitModel extends ChangeNotifier {
+  final Firestore firestore = Firestore.instance;
+  String userId;
 
   Stream<List<UserHabit>> createUserHabitListStream() {
     final transformer =
@@ -23,7 +17,7 @@ class UserHabitModel {
           return UserHabit(
             id: document['id'],
             name: document['name'],
-            recordList: recordList.map((record) {
+            recordList: recordList.map((dynamic record) {
               return UserHabitRecord(
                 habitId: document['id'],
                 recordDate: UserHabitRecordDate(
@@ -41,7 +35,7 @@ class UserHabitModel {
 
     final habitListStream = firestore
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .snapshots()
         .transform(transformer);
@@ -52,12 +46,12 @@ class UserHabitModel {
   Stream<UserHabit> createUserHabitStream(UserHabit habit) {
     final transformer =
         StreamTransformer<DocumentSnapshot, UserHabit>.fromHandlers(
-            handleData: (data, sink) {
+            handleData: (DocumentSnapshot data, EventSink<UserHabit> sink) {
       final List<dynamic> recordList = data['recordList'];
-      final userHabit = UserHabit(
+      final UserHabit userHabit = UserHabit(
         id: data['id'],
         name: data['name'],
-        recordList: recordList.map((record) {
+        recordList: recordList.map((dynamic record) {
           return UserHabitRecord(
             habitId: data['id'],
             recordDate: UserHabitRecordDate(
@@ -73,7 +67,7 @@ class UserHabitModel {
 
     final habitStream = firestore
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .document(habit.id)
         .snapshots()
@@ -86,11 +80,11 @@ class UserHabitModel {
     // TODO: Transaction使う？
     final DocumentReference document = Firestore.instance
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .document(habit.id);
 
-    await document.setData({
+    await document.setData(<String, dynamic>{
       'id': habit.id,
       'name': habit.name,
       'recordList': habit.recordList
@@ -110,18 +104,18 @@ class UserHabitModel {
     // TODO: Transaction使う？
     final reference = firestore
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .document(habit.id);
 
-    await reference.updateData({'name': habit.name});
+    await reference.updateData(<String, dynamic>{'name': habit.name});
   }
 
   Future<void> deleteHabit(UserHabit habit) async {
     // TODO: Transaction使う？
     final reference = firestore
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .document(habit.id);
 
@@ -132,14 +126,14 @@ class UserHabitModel {
     // TODO: Transaction使う？
     final document = await firestore
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .document(habitRecord.habitId)
         .get();
 
     // TODO: Entityに処理を移す
     final List<dynamic> recordList = document['recordList'];
-    final newRecordList = List.from(recordList);
+    final newRecordList = recordList.toList();
     newRecordList.add({
       'habitId': habitRecord.habitId,
       'recordDate': {
@@ -149,22 +143,23 @@ class UserHabitModel {
       },
     });
 
-    await document.reference.updateData({'recordList': newRecordList});
+    await document.reference
+        .updateData(<String, dynamic>{'recordList': newRecordList});
   }
 
   Future<void> removeHabitRecord(UserHabitRecord habitRecord) async {
     // TODO: Transaction使う？
     final document = await firestore
         .collection('users')
-        .document(authModel.user.uid)
+        .document(userId)
         .collection('habits')
         .document(habitRecord.habitId)
         .get();
 
     // TODO: Entityに処理を移す
     final List<dynamic> recordList = document['recordList'];
-    final newRecordList = List.from(recordList);
-    newRecordList.removeWhere((record) {
+    final newRecordList = recordList.toList();
+    newRecordList.removeWhere((dynamic record) {
       final Map<String, dynamic> recordDate = record['recordDate'];
       final bool isSameDate =
           (recordDate['year'] == habitRecord.recordDate.year &&
@@ -173,6 +168,7 @@ class UserHabitModel {
       return isSameDate;
     });
 
-    await document.reference.updateData({'recordList': newRecordList});
+    await document.reference
+        .updateData(<String, dynamic>{'recordList': newRecordList});
   }
 }

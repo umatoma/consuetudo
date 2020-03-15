@@ -5,7 +5,7 @@ class AppAppBar extends AppBar {
       : super(
             key: key,
             actions: actions,
-            title: Text('Consuetodo'),
+            title: const Text('Consuetodo'),
             flexibleSpace: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(

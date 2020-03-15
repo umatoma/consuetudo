@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PutHabitPageArguments {
-  final UserHabit habit;
-
   PutHabitPageArguments(this.habit);
+
+  final UserHabit habit;
 }
 
 class PutHabitPage extends StatelessWidget {
@@ -51,13 +51,13 @@ class PutHabitPage extends StatelessWidget {
                 builder: (context, snapshot) {
                   if (snapshot.data == null) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text('Loading...');
+                      return const Text('Loading...');
                     } else {
-                      return Text('Not found...');
+                      return const Text('Not found...');
                     }
                   }
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: _Form(habit: snapshot.data),
                   );
                 }),
@@ -69,9 +69,9 @@ class PutHabitPage extends StatelessWidget {
 }
 
 class _Form extends StatefulWidget {
-  final UserHabit habit;
-
   const _Form({Key key, this.habit}) : super(key: key);
+
+  final UserHabit habit;
 
   @override
   __FormState createState() => __FormState();
@@ -96,7 +96,7 @@ class __FormState extends State<_Form> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           TextFormField(
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: UnderlineInputBorder(),
               labelText: '名前',
             ),
@@ -105,22 +105,22 @@ class __FormState extends State<_Form> {
               return value.isEmpty ? '入力して下さい' : null;
             },
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
                 child: OutlineButton(
-                  child: Text('キャンセル'),
+                  child: const Text('キャンセル'),
                   onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
               ),
-              SizedBox(width: 16.0),
+              const SizedBox(width: 16.0),
               Expanded(
                 child: RaisedButton(
-                  child: Text('決定'),
+                  child: const Text('決定'),
                   onPressed: _onConfirm,
                 ),
               ),
@@ -131,7 +131,7 @@ class __FormState extends State<_Form> {
     );
   }
 
-  void _onConfirm() async {
+  Future<void> _onConfirm() async {
     if (_formKey.currentState.validate()) {
       try {
         final userHabitModel =

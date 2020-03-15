@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
                   value: () {
                     authModel.signOut();
                   },
-                  child: Text('ログアウト'),
+                  child: const Text('ログアウト'),
                 ),
               ];
             },
@@ -48,9 +48,9 @@ class HomePage extends StatelessWidget {
             (BuildContext context, AsyncSnapshot<List<UserHabit>> snapshot) {
           if (snapshot.data == null) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text('Loading...');
+              return const Text('Loading...');
             } else {
-              return Text('Not found...');
+              return const Text('Not found...');
             }
           }
 
@@ -62,11 +62,11 @@ class HomePage extends StatelessWidget {
 }
 
 class _Head extends StatelessWidget {
+  const _Head({Key key, @required this.targetDate}) : super(key: key);
+
   static const upperHeight = 64.0;
   static const lowerHeight = 48.0;
   final DateTime targetDate;
-
-  const _Head({Key key, @required this.targetDate}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class _Head extends StatelessWidget {
                     color: Colors.white,
                     onPressed: () {},
                   ),
-                  Expanded(
+                  const Expanded(
                     child: Center(
                       child: Text(
                         '習慣を記録',
@@ -139,17 +139,17 @@ class _Head extends StatelessWidget {
 }
 
 class _PageView extends StatefulWidget {
-  final List<UserHabit> userHabitList;
-
   const _PageView({Key key, this.userHabitList}) : super(key: key);
+
+  final List<UserHabit> userHabitList;
 
   @override
   _PageViewState createState() => _PageViewState();
 }
 
 class _PageViewState extends State<_PageView> {
-  static final int _itemCount = 999999;
-  static final int _initialPage = _itemCount ~/ 2;
+  static const int _itemCount = 999999;
+  static const int _initialPage = _itemCount ~/ 2;
 
   PageController _pageController;
   DateTime _referenceDate;
@@ -201,12 +201,12 @@ class _PageViewState extends State<_PageView> {
 }
 
 class _HabitList extends StatelessWidget {
-  final DateTime targetDate;
-  final List<UserHabit> userHabitList;
-
   const _HabitList(
       {Key key, @required this.targetDate, @required this.userHabitList})
       : super(key: key);
+
+  final DateTime targetDate;
+  final List<UserHabit> userHabitList;
 
   @override
   Widget build(BuildContext context) {
@@ -214,6 +214,7 @@ class _HabitList extends StatelessWidget {
     return ListView(
       children: userHabitList.map((UserHabit userHabit) {
         return Card(
+          key: Key(userHabit.id),
           child: ListTile(
             onTap: () {
               if (userHabit.isRecordedOn(targetDate)) {
@@ -241,7 +242,7 @@ class _HabitList extends StatelessWidget {
                 );
               },
             ),
-            contentPadding: EdgeInsets.only(left: 16.0),
+            contentPadding: const EdgeInsets.only(left: 16.0),
           ),
         );
       }).toList(),

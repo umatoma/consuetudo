@@ -3,35 +3,37 @@ import 'package:consuetudo/model/user_habit_model.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
 import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class ViewHabitPageArguments {
-  final UserHabit habit;
-
   ViewHabitPageArguments(this.habit);
+
+  final UserHabit habit;
 }
 
 class ViewHabitPage extends StatelessWidget {
-  static const routeName = '/viewHabit';
+  static const String routeName = '/viewHabit';
 
   @override
   Widget build(BuildContext context) {
     final ViewHabitPageArguments args =
         ModalRoute.of(context).settings.arguments;
-    final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
+    final UserHabitModel userHabitModel =
+        Provider.of<UserHabitModel>(context, listen: false);
 
     return Scaffold(
       appBar: AppAppBar(context: context),
-      body: StreamBuilder(
+      body: StreamBuilder<UserHabit>(
           stream: userHabitModel.createUserHabitStream(args.habit),
-          builder: (context, AsyncSnapshot<UserHabit> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<UserHabit> snapshot) {
             if (snapshot.data == null) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Text('Loading...');
+                return const Text('Loading...');
               } else {
-                return Text('Not found...');
+                return const Text('Not found...');
               }
             }
 
@@ -42,8 +44,8 @@ class ViewHabitPage extends StatelessWidget {
                   _Head(habit: habit),
                   Card(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      child: CalendarCarousel(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: CalendarCarousel<Event>(
                         height: 360.0,
                         locale: Intl.defaultLocale,
                         daysHaveCircularBorder: true,
@@ -75,9 +77,9 @@ class ViewHabitPage extends StatelessWidget {
                   ),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: RaisedButton(
-                      child: Text('編集'),
+                      child: const Text('編集'),
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
@@ -89,9 +91,9 @@ class ViewHabitPage extends StatelessWidget {
                   ),
                   Container(
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: OutlineButton(
-                      child: Text('削除'),
+                      child: const Text('削除'),
                       onPressed: () {
                         _showConfirmDeleteDialog(
                           context,
@@ -112,21 +114,21 @@ class ViewHabitPage extends StatelessWidget {
 
   void _showConfirmDeleteDialog(BuildContext context,
       {@required VoidCallback onConfirm}) {
-    showDialog(
+    showDialog<AlertDialog>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('習慣を削除'),
-            content: Text('削除してよろしいですか？'),
+            title: const Text('習慣を削除'),
+            content: const Text('削除してよろしいですか？'),
             actions: <Widget>[
               FlatButton(
-                child: Text('キャンセル'),
+                child: const Text('キャンセル'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                child: Text('削除'),
+                child: const Text('削除'),
                 onPressed: () {
                   Navigator.of(context).pop();
                   onConfirm();
@@ -139,11 +141,11 @@ class ViewHabitPage extends StatelessWidget {
 }
 
 class _Head extends StatelessWidget {
-  static const upperHeight = 64.0;
-  static const lowerHeight = 48.0;
-  final UserHabit habit;
-
   const _Head({Key key, @required this.habit}) : super(key: key);
+
+  static const double upperHeight = 64.0;
+  static const double lowerHeight = 48.0;
+  final UserHabit habit;
 
   @override
   Widget build(BuildContext context) {

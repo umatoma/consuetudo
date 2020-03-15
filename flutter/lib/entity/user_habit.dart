@@ -2,18 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class UserHabit {
-  final String id;
-  final String name;
-  final List<UserHabitRecord> recordList;
-
   UserHabit({
     String id,
     @required this.name,
     @required this.recordList,
-  }) : this.id = id ?? Uuid().v4();
+  }) : id = id ?? Uuid().v4();
+
+  final String id;
+  final String name;
+  final List<UserHabitRecord> recordList;
 
   UserHabit putName(String name) {
-    return UserHabit(id: this.id, name: name, recordList: this.recordList);
+    return UserHabit(id: id, name: name, recordList: recordList);
   }
 
   UserHabitRecord createRecord(DateTime dateTime) {
@@ -29,37 +29,37 @@ class UserHabit {
   }
 
   bool isRecordedOn(DateTime dateTime) {
-    return this.recordList.any((record) {
+    return recordList.any((record) {
       return record.recordDate.isRecordedOn(dateTime);
     });
   }
 }
 
 class UserHabitRecord {
-  final String habitId;
-  final UserHabitRecordDate recordDate;
-
   UserHabitRecord({
     @required this.habitId,
     @required this.recordDate,
   });
+
+  final String habitId;
+  final UserHabitRecordDate recordDate;
 }
 
 class UserHabitRecordDate {
-  final int year;
-  final int month;
-  final int date;
-
   UserHabitRecordDate({
     @required this.year,
     @required this.month,
     @required this.date,
   });
 
+  final int year;
+  final int month;
+  final int date;
+
   bool isRecordedOn(DateTime dateTime) {
     final localDateTime = dateTime.toLocal();
-    return (localDateTime.year == year &&
+    return localDateTime.year == year &&
         localDateTime.month == month &&
-        localDateTime.day == date);
+        localDateTime.day == date;
   }
 }

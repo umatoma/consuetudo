@@ -9,34 +9,31 @@ enum AuthStatus {
 }
 
 class AuthModel extends ChangeNotifier {
-  final _auth = FirebaseAuth.instance;
-  final _googleSignIn = GoogleSignIn();
-  FirebaseUser _user;
-  AuthStatus _authStatus = AuthStatus.Loading;
-
-  FirebaseUser get user => _user;
-
-  AuthStatus get authStatus => _authStatus;
-
   AuthModel() {
     _auth.onAuthStateChanged.listen((firebaseUser) {
-      _user = firebaseUser;
+      user = firebaseUser;
 
-      if (_user == null) {
-        _authStatus = AuthStatus.SignedOut;
+      if (user == null) {
+        authStatus = AuthStatus.SignedOut;
       } else {
-        _authStatus = AuthStatus.SignedIn;
+        authStatus = AuthStatus.SignedIn;
       }
 
       notifyListeners();
     });
   }
 
-  void signOut() async {
+  final _auth = FirebaseAuth.instance;
+  final _googleSignIn = GoogleSignIn();
+
+  FirebaseUser user;
+  AuthStatus authStatus = AuthStatus.Loading;
+
+  Future<void> signOut() async {
     await _auth.signOut();
   }
 
-  void signIn() async {
+  Future<void> signIn() async {
     try {
       await _googleSignIn.signOut();
       final googleSignInAccount = await _googleSignIn.signIn();
