@@ -1,6 +1,6 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
-import 'package:consuetudo/model/user_habit_model.dart';
+import 'package:consuetudo/model/habit_list_model.dart';
 import 'package:consuetudo/page/post_habit_page.dart';
 import 'package:consuetudo/page/view_habit_page.dart';
 import 'package:consuetudo/page/widget/app_bar.dart';
@@ -13,49 +13,42 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authModel = Provider.of<AuthModel>(context, listen: false);
-    final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
-    return Scaffold(
-      appBar: AppAppBar(
-        context: context,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.pushNamed(context, PostHabitPage.routeName);
-            },
-          ),
-          PopupMenuButton<VoidCallback>(
-            onSelected: (VoidCallback callback) {
-              callback();
-            },
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem<VoidCallback>(
-                  value: () {
-                    authModel.signOut();
-                  },
-                  child: const Text('ログアウト'),
-                ),
-              ];
-            },
-          )
-        ],
+    return ChangeNotifierProvider<HabitListModel>.value(
+      value: HabitListModel(
+        userId: Provider.of<AuthModel>(context).user.uid,
       ),
-      body: StreamBuilder(
-        stream: userHabitModel.createUserHabitListStream(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<UserHabit>> snapshot) {
-          if (snapshot.data == null) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text('Loading...');
-            } else {
-              return const Text('Not found...');
-            }
-          }
-
-          return _PageView(userHabitList: snapshot.data);
-        },
+      child: Scaffold(
+        appBar: AppAppBar(
+          context: context,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.pushNamed(context, PostHabitPage.routeName);
+              },
+            ),
+            PopupMenuButton<VoidCallback>(
+              onSelected: (VoidCallback callback) {
+                callback();
+              },
+              itemBuilder: (context) {
+                return [
+                  PopupMenuItem<VoidCallback>(
+                    value: () {
+                      Provider.of<AuthModel>(context, listen: false).signOut();
+                    },
+                    child: const Text('ログアウト'),
+                  ),
+                ];
+              },
+            )
+          ],
+        ),
+        body: Consumer<HabitListModel>(
+          builder: (_, habitListModel, __) {
+            return _PageView(habitList: habitListModel.habitList);
+          },
+        ),
       ),
     );
   }
@@ -139,9 +132,9 @@ class _Head extends StatelessWidget {
 }
 
 class _PageView extends StatefulWidget {
-  const _PageView({Key key, this.userHabitList}) : super(key: key);
+  const _PageView({Key key, this.habitList}) : super(key: key);
 
-  final List<UserHabit> userHabitList;
+  final List<UserHabit> habitList;
 
   @override
   _PageViewState createState() => _PageViewState();
@@ -189,8 +182,10 @@ class _PageViewState extends State<_PageView> {
                 final diffDays = position - _initialPage;
                 final targetDate = _referenceDate.add(Duration(days: diffDays));
                 return _HabitList(
-                    targetDate: targetDate,
-                    userHabitList: widget.userHabitList);
+                  key: Key(targetDate.toString()),
+                  targetDate: targetDate,
+                  userHabitList: widget.habitList,
+                );
               },
             ),
           ),
@@ -210,7 +205,6 @@ class _HabitList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userHabitModel = Provider.of<UserHabitModel>(context, listen: false);
     return ListView(
       children: userHabitList.map((UserHabit userHabit) {
         return Card(
@@ -218,10 +212,10 @@ class _HabitList extends StatelessWidget {
           child: ListTile(
             onTap: () {
               if (userHabit.isRecordedOn(targetDate)) {
-                userHabitModel
+                Provider.of<HabitListModel>(context, listen: false)
                     .removeHabitRecord(userHabit.createRecord(targetDate));
               } else {
-                userHabitModel
+                Provider.of<HabitListModel>(context, listen: false)
                     .pushHabitRecord(userHabit.createRecord(targetDate));
               }
             },

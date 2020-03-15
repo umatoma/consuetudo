@@ -1,6 +1,6 @@
 import 'package:consuetudo/localizations.dart';
 import 'package:consuetudo/model/auth_model.dart';
-import 'package:consuetudo/model/user_habit_model.dart';
+import 'package:consuetudo/model/habit_new_model.dart';
 import 'package:consuetudo/page/home_page.dart';
 import 'package:consuetudo/page/post_habit_page.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
@@ -21,11 +21,6 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthModel>(
           create: (_) => AuthModel(),
-        ),
-        ChangeNotifierProxyProvider<AuthModel, UserHabitModel>(
-          create: (_) => UserHabitModel(),
-          update: (_, authModel, userHabitModel) =>
-              userHabitModel..userId = authModel.user?.uid,
         ),
       ],
       child: MaterialApp(

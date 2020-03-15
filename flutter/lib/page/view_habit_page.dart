@@ -1,12 +1,13 @@
 import 'package:consuetudo/entity/user_habit.dart';
-import 'package:consuetudo/model/user_habit_model.dart';
+import 'package:consuetudo/model/auth_model.dart';
+import 'package:consuetudo/model/habit_model.dart';
 import 'package:consuetudo/page/put_habit_page.dart';
 import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ViewHabitPageArguments {
   ViewHabitPageArguments(this.habit);
@@ -21,23 +22,22 @@ class ViewHabitPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ViewHabitPageArguments args =
         ModalRoute.of(context).settings.arguments;
-    final UserHabitModel userHabitModel =
-        Provider.of<UserHabitModel>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppAppBar(context: context),
-      body: StreamBuilder<UserHabit>(
-          stream: userHabitModel.createUserHabitStream(args.habit),
-          builder: (BuildContext context, AsyncSnapshot<UserHabit> snapshot) {
-            if (snapshot.data == null) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text('Loading...');
-              } else {
-                return const Text('Not found...');
-              }
+    return ChangeNotifierProvider<HabitModel>.value(
+      value: HabitModel(
+        userId: Provider.of<AuthModel>(context).user.uid,
+        userHabit: args.habit,
+      ),
+      child: Scaffold(
+        appBar: AppAppBar(context: context),
+        body: Consumer<HabitModel>(
+          builder: (_, habitModel, __) {
+            final habit = habitModel.habit;
+
+            if (habit == null) {
+              return const Text('Not Found...');
             }
 
-            final habit = snapshot.data;
             return Container(
               child: Column(
                 children: <Widget>[
@@ -98,7 +98,7 @@ class ViewHabitPage extends StatelessWidget {
                         _showConfirmDeleteDialog(
                           context,
                           onConfirm: () async {
-                            await userHabitModel.deleteHabit(habit);
+                            await habitModel.deleteHabit();
                             Navigator.pop(context);
                           },
                         );
@@ -108,7 +108,9 @@ class ViewHabitPage extends StatelessWidget {
                 ],
               ),
             );
-          }),
+          },
+        ),
+      ),
     );
   }
 

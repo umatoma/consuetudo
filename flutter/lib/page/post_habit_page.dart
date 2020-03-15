@@ -1,5 +1,7 @@
 import 'package:consuetudo/entity/user_habit.dart';
-import 'package:consuetudo/model/user_habit_model.dart';
+import 'package:consuetudo/model/auth_model.dart';
+import 'package:consuetudo/model/habit_list_model.dart';
+import 'package:consuetudo/model/habit_new_model.dart';
 import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,39 +11,44 @@ class PostHabitPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppAppBar(context: context),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: 64.0,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: <Color>[
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorLight,
-                ],
+    return Provider<HabitNewModel>.value(
+      value: HabitNewModel(
+        userId: Provider.of<AuthModel>(context).user.uid,
+      ),
+      child: Scaffold(
+        appBar: AppAppBar(context: context),
+        body: Column(
+          children: <Widget>[
+            Container(
+              height: 64.0,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).primaryColorLight,
+                  ],
+                ),
               ),
-            ),
-            child: Center(
-              child: Text(
-                '習慣を追加',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+              child: Center(
+                child: Text(
+                  '習慣を追加',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _Form(),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: _Form(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -108,10 +115,10 @@ class __FormState extends State<_Form> {
   Future<void> _onConfirm() async {
     if (_formKey.currentState.validate()) {
       try {
-        final userHabitModel =
-            Provider.of<UserHabitModel>(context, listen: false);
+        final habitNewModel =
+            Provider.of<HabitNewModel>(context, listen: false);
         final habit = UserHabit(name: _controller.text, recordList: []);
-        await userHabitModel.postHabit(habit);
+        await habitNewModel.postHabit(habit);
 
         Navigator.pop(context);
       } catch (e, stackTrace) {
