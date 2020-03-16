@@ -5,23 +5,17 @@ import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PutHabitPageArguments {
-  PutHabitPageArguments(this.habit);
-
-  final UserHabit habit;
-}
-
 class PutHabitPage extends StatelessWidget {
-  static const routeName = '/putHabit';
+  const PutHabitPage({Key key, this.userHabit}) : super(key: key);
+
+  final UserHabit userHabit;
 
   @override
   Widget build(BuildContext context) {
-    final PutHabitPageArguments args =
-        ModalRoute.of(context).settings.arguments;
     return ChangeNotifierProvider<HabitModel>.value(
       value: HabitModel(
         userId: Provider.of<AuthModel>(context).user.uid,
-        userHabit: args.habit,
+        userHabit: userHabit,
       ),
       child: Scaffold(
         appBar: AppAppBar(context: context),
@@ -54,10 +48,10 @@ class PutHabitPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Consumer<HabitModel>(
                   builder: (_, habitModel, __) {
-                    if (habitModel.habit == null) {
+                    if (habitModel.userHabit == null) {
                       return const Text('Not found...');
                     }
-                    return _Form(habit: habitModel.habit);
+                    return _Form(habit: habitModel.userHabit);
                   },
                 ),
               ),
@@ -136,8 +130,7 @@ class __FormState extends State<_Form> {
     if (_formKey.currentState.validate()) {
       try {
         final habitModel = Provider.of<HabitModel>(context, listen: false);
-        final newHabit = widget.habit.putName(_controller.text);
-        await habitModel.putHabit(newHabit);
+        await habitModel.putHabit(name: _controller.text);
         Navigator.pop(context);
       } catch (e, stackTrace) {
         print(e);

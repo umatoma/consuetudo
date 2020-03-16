@@ -1,14 +1,11 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
-import 'package:consuetudo/model/habit_list_model.dart';
 import 'package:consuetudo/model/habit_new_model.dart';
 import 'package:consuetudo/page/widget/app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PostHabitPage extends StatelessWidget {
-  static const routeName = '/postHabit';
-
   @override
   Widget build(BuildContext context) {
     return Provider<HabitNewModel>.value(

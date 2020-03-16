@@ -9,31 +9,25 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class ViewHabitPageArguments {
-  ViewHabitPageArguments(this.habit);
-
-  final UserHabit habit;
-}
-
 class ViewHabitPage extends StatelessWidget {
-  static const String routeName = '/viewHabit';
+  const ViewHabitPage({Key key, this.userHabit}) : super(key: key);
+
+  final UserHabit userHabit;
 
   @override
   Widget build(BuildContext context) {
-    final ViewHabitPageArguments args =
-        ModalRoute.of(context).settings.arguments;
-
     return ChangeNotifierProvider<HabitModel>.value(
       value: HabitModel(
         userId: Provider.of<AuthModel>(context).user.uid,
-        userHabit: args.habit,
+        userHabit: userHabit,
       ),
       child: Scaffold(
         appBar: AppAppBar(context: context),
         body: Consumer<HabitModel>(
           builder: (_, habitModel, __) {
-            final habit = habitModel.habit;
+            final habit = habitModel.userHabit;
 
+            print(habit);
             if (habit == null) {
               return const Text('Not Found...');
             }
@@ -80,11 +74,12 @@ class ViewHabitPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: RaisedButton(
                       child: const Text('編集'),
-                      onPressed: () {
-                        Navigator.pushNamed(
+                      onPressed: () async {
+                        await Navigator.push<PutHabitPage>(
                           context,
-                          PutHabitPage.routeName,
-                          arguments: PutHabitPageArguments(habit),
+                          MaterialPageRoute(
+                            builder: (_) => PutHabitPage(userHabit: habit),
+                          ),
                         );
                       },
                     ),

@@ -42,11 +42,6 @@ class App extends StatelessWidget {
             textTheme: ButtonTextTheme.primary,
           ),
         ),
-        routes: <String, WidgetBuilder>{
-          PostHabitPage.routeName: (_) => PostHabitPage(),
-          ViewHabitPage.routeName: (_) => ViewHabitPage(),
-          PutHabitPage.routeName: (_) => PutHabitPage(),
-        },
         home: _AppHome(),
       ),
     );

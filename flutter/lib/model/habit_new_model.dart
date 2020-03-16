@@ -1,36 +1,16 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:consuetudo/entity/user_habit.dart';
+import 'package:consuetudo/model/repository/user_habit_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class HabitNewModel {
-  HabitNewModel({@required this.userId});
+  HabitNewModel({@required String userId})
+      : repository = UserHabitRepository(userId: userId);
 
-  final Firestore _firestore = Firestore.instance;
-  final String userId;
+  final UserHabitRepository repository;
 
-  Future<void> postHabit(UserHabit habit) async {
-    // TODO: Transaction使う？
-    final DocumentReference document = _firestore
-        .collection('users')
-        .document(userId)
-        .collection('habits')
-        .document(habit.id);
-
-    await document.setData(<String, dynamic>{
-      'id': habit.id,
-      'name': habit.name,
-      'recordList': habit.recordList
-          .map((record) => {
-                'habitId': record.habitId,
-                'recordDate': {
-                  'year': record.recordDate.year,
-                  'month': record.recordDate.month,
-                  'date': record.recordDate.date,
-                },
-              })
-          .toList(),
-    });
+  Future<void> postHabit(UserHabit userHabit) async {
+    await repository.postHabit(userHabit);
   }
 }

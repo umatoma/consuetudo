@@ -23,8 +23,11 @@ class HomePage extends StatelessWidget {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.add),
-              onPressed: () {
-                Navigator.pushNamed(context, PostHabitPage.routeName);
+              onPressed: () async {
+                await Navigator.push<PostHabitPage>(
+                  context,
+                  MaterialPageRoute(builder: (_) => PostHabitPage()),
+                );
               },
             ),
             PopupMenuButton<VoidCallback>(
@@ -229,10 +232,11 @@ class _HabitList extends StatelessWidget {
             trailing: IconButton(
               icon: Icon(Icons.more_vert),
               onPressed: () async {
-                Navigator.pushNamed(
+                await Navigator.push<ViewHabitPage>(
                   context,
-                  ViewHabitPage.routeName,
-                  arguments: ViewHabitPageArguments(userHabit),
+                  MaterialPageRoute(
+                    builder: (_) => ViewHabitPage(userHabit: userHabit),
+                  ),
                 );
               },
             ),
