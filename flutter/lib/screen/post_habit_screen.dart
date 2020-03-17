@@ -1,11 +1,12 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/model/habit_new_model.dart';
-import 'package:consuetudo/page/widget/app_bar.dart';
+import 'package:consuetudo/screen/widget/app_bar.dart';
+import 'package:consuetudo/screen/widget/button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PostHabitPage extends StatelessWidget {
+class PostHabitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<HabitNewModel>.value(
@@ -88,19 +89,13 @@ class __FormState extends State<_Form> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: OutlineButton(
-                  child: const Text('キャンセル'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                child: CancelButton(onPressed: () {
+                  Navigator.pop(context);
+                }),
               ),
               const SizedBox(width: 16.0),
               Expanded(
-                child: RaisedButton(
-                  child: const Text('決定'),
-                  onPressed: _onConfirm,
-                ),
+                child: ConfirmButton(onPressed: _onConfirm),
               ),
             ],
           ),

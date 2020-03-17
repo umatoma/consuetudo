@@ -1,11 +1,11 @@
 import 'package:consuetudo/localizations.dart';
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/model/habit_new_model.dart';
-import 'package:consuetudo/page/home_page.dart';
-import 'package:consuetudo/page/post_habit_page.dart';
-import 'package:consuetudo/page/put_habit_page.dart';
-import 'package:consuetudo/page/sign_in_page.dart';
-import 'package:consuetudo/page/view_habit_page.dart';
+import 'package:consuetudo/screen/home_screen.dart';
+import 'package:consuetudo/screen/post_habit_screen.dart';
+import 'package:consuetudo/screen/put_habit_screen.dart';
+import 'package:consuetudo/screen/sign_in_screen.dart';
+import 'package:consuetudo/screen/view_habit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -57,9 +57,9 @@ class _AppHome extends StatelessWidget {
       case AuthStatus.Loading:
         return _AppLoading();
       case AuthStatus.SignedOut:
-        return SignInPage();
+        return SignInScreen();
       case AuthStatus.SignedIn:
-        return HomePage();
+        return HomeScreen();
       default:
         throw Exception('Invalid auth status.');
     }

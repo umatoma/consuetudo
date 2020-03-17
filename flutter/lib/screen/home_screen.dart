@@ -1,14 +1,15 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/model/habit_list_model.dart';
-import 'package:consuetudo/page/post_habit_page.dart';
-import 'package:consuetudo/page/view_habit_page.dart';
-import 'package:consuetudo/page/widget/app_bar.dart';
+import 'package:consuetudo/screen/post_habit_screen.dart';
+import 'package:consuetudo/screen/view_habit_screen.dart';
+import 'package:consuetudo/screen/widget/app_bar.dart';
+import 'package:consuetudo/screen/widget/head.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   final DateTime targetDate = DateTime.now();
 
   @override
@@ -24,9 +25,9 @@ class HomePage extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.add),
               onPressed: () async {
-                await Navigator.push<PostHabitPage>(
+                await Navigator.push<PostHabitScreen>(
                   context,
-                  MaterialPageRoute(builder: (_) => PostHabitPage()),
+                  MaterialPageRoute(builder: (_) => PostHabitScreen()),
                 );
               },
             ),
@@ -52,83 +53,6 @@ class HomePage extends StatelessWidget {
             return _PageView(habitList: habitListModel.habitList);
           },
         ),
-      ),
-    );
-  }
-}
-
-class _Head extends StatelessWidget {
-  const _Head({Key key, @required this.targetDate}) : super(key: key);
-
-  static const upperHeight = 64.0;
-  static const lowerHeight = 48.0;
-  final DateTime targetDate;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: upperHeight + lowerHeight,
-      child: Stack(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            height: upperHeight + (lowerHeight / 2.0),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: <Color>[
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorLight,
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: upperHeight,
-              child: Row(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_back_ios),
-                    color: Colors.white,
-                    onPressed: () {},
-                  ),
-                  const Expanded(
-                    child: Center(
-                      child: Text(
-                        '習慣を記録',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_forward_ios),
-                    color: Colors.white,
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Card(
-              child: Container(
-                width: 192,
-                height: lowerHeight - 8.0, // Padding調整
-                child: Center(
-                  child: Text(DateFormat.MMMMd().format(targetDate)),
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -170,7 +94,20 @@ class _PageViewState extends State<_PageView> {
     return Container(
       child: Column(
         children: <Widget>[
-          _Head(targetDate: _currentDate),
+          SubTitledScreenHead(
+            title: '習慣を記録',
+            subTitle: DateFormat.MMMMd().format(_currentDate),
+            leftIconButton: IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              color: Colors.white,
+              onPressed: () {},
+            ),
+            rightIconButton: IconButton(
+              icon: Icon(Icons.arrow_forward_ios),
+              color: Colors.white,
+              onPressed: () {},
+            ),
+          ),
           Expanded(
             child: PageView.builder(
               controller: _pageController,
@@ -232,10 +169,10 @@ class _HabitList extends StatelessWidget {
             trailing: IconButton(
               icon: Icon(Icons.more_vert),
               onPressed: () async {
-                await Navigator.push<ViewHabitPage>(
+                await Navigator.push<ViewHabitScreen>(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ViewHabitPage(userHabit: userHabit),
+                    builder: (_) => ViewHabitScreen(userHabit: userHabit),
                   ),
                 );
               },

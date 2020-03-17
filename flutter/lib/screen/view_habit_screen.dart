@@ -1,16 +1,18 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/model/habit_model.dart';
-import 'package:consuetudo/page/put_habit_page.dart';
-import 'package:consuetudo/page/widget/app_bar.dart';
+import 'package:consuetudo/screen/put_habit_screen.dart';
+import 'package:consuetudo/screen/widget/app_bar.dart';
+import 'package:consuetudo/screen/widget/button.dart';
+import 'package:consuetudo/screen/widget/head.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class ViewHabitPage extends StatelessWidget {
-  const ViewHabitPage({Key key, this.userHabit}) : super(key: key);
+class ViewHabitScreen extends StatelessWidget {
+  const ViewHabitScreen({Key key, this.userHabit}) : super(key: key);
 
   final UserHabit userHabit;
 
@@ -35,7 +37,10 @@ class ViewHabitPage extends StatelessWidget {
             return Container(
               child: Column(
                 children: <Widget>[
-                  _Head(habit: habit),
+                  SubTitledScreenHead(
+                    title: '習慣の記録',
+                    subTitle: habit.name,
+                  ),
                   Card(
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -72,13 +77,13 @@ class ViewHabitPage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: RaisedButton(
+                    child: PrimaryButton(
                       child: const Text('編集'),
                       onPressed: () async {
-                        await Navigator.push<PutHabitPage>(
+                        await Navigator.push<PutHabitScreen>(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => PutHabitPage(userHabit: habit),
+                            builder: (_) => PutHabitScreen(userHabit: habit),
                           ),
                         );
                       },
@@ -87,7 +92,7 @@ class ViewHabitPage extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: OutlineButton(
+                    child: SecondaryButton(
                       child: const Text('削除'),
                       onPressed: () {
                         _showConfirmDeleteDialog(
@@ -134,66 +139,5 @@ class ViewHabitPage extends StatelessWidget {
             ],
           );
         });
-  }
-}
-
-class _Head extends StatelessWidget {
-  const _Head({Key key, @required this.habit}) : super(key: key);
-
-  static const double upperHeight = 64.0;
-  static const double lowerHeight = 48.0;
-  final UserHabit habit;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: upperHeight + lowerHeight,
-      child: Stack(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            height: upperHeight + (lowerHeight / 2.0),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: <Color>[
-                  Theme.of(context).primaryColor,
-                  Theme.of(context).primaryColorLight,
-                ],
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: upperHeight,
-              child: Center(
-                child: Text(
-                  '習慣の記録',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Card(
-              child: Container(
-                width: 192,
-                height: lowerHeight - 8.0, // Padding調整
-                child: Center(
-                  child: Text(habit.name),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

@@ -1,12 +1,14 @@
 import 'package:consuetudo/entity/user_habit.dart';
 import 'package:consuetudo/model/auth_model.dart';
 import 'package:consuetudo/model/habit_model.dart';
-import 'package:consuetudo/page/widget/app_bar.dart';
+import 'package:consuetudo/screen/widget/app_bar.dart';
+import 'package:consuetudo/screen/widget/button.dart';
+import 'package:consuetudo/screen/widget/head.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PutHabitPage extends StatelessWidget {
-  const PutHabitPage({Key key, this.userHabit}) : super(key: key);
+class PutHabitScreen extends StatelessWidget {
+  const PutHabitScreen({Key key, this.userHabit}) : super(key: key);
 
   final UserHabit userHabit;
 
@@ -21,28 +23,7 @@ class PutHabitPage extends StatelessWidget {
         appBar: AppAppBar(context: context),
         body: Column(
           children: <Widget>[
-            Container(
-              height: 64.0,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).primaryColorLight,
-                  ],
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  '習慣を編集',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
+            const ScreenHead(title: '習慣を編集'),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -105,19 +86,13 @@ class __FormState extends State<_Form> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Expanded(
-                child: OutlineButton(
-                  child: const Text('キャンセル'),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
+                child: CancelButton(onPressed: () {
+                  Navigator.pop(context);
+                }),
               ),
               const SizedBox(width: 16.0),
               Expanded(
-                child: RaisedButton(
-                  child: const Text('決定'),
-                  onPressed: _onConfirm,
-                ),
+                child: ConfirmButton(onPressed: _onConfirm),
               ),
             ],
           ),

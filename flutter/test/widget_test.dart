@@ -6,7 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:consuetudo/model/auth_model.dart';
-import 'package:consuetudo/page/sign_in_page.dart';
+import 'package:consuetudo/screen/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,7 @@ void main() {
       await tester.pumpWidget(ChangeNotifierProvider(
         create: (context) => AuthModel(),
         child: MaterialApp(
-          home: SignInPage(),
+          home: SignInScreen(),
         ),
       ));
 
@@ -28,7 +28,7 @@ void main() {
       await tester.pumpWidget(ChangeNotifierProvider(
         create: (context) => AuthModel(),
         child: MaterialApp(
-          home: SignInPage(),
+          home: SignInScreen(),
         ),
       ));
 

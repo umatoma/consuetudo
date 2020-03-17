@@ -2,7 +2,7 @@ import 'package:consuetudo/model/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authModel = Provider.of<AuthModel>(context, listen: false);
